@@ -2,21 +2,26 @@
 
 Write a brief description of the project, explaining what it does in a couple of sentences.
 
-## Requirements
+
+## Functionality
+
+## To Use
+
+### Requirements
 
 Add software operating systems, programming languages or libraries which are required by this project as an unordered list like this:
 
 *   Python 3.4 or higher
 *   [ArchivesSnake](https://github.com/archivesspace-labs/ArchivesSnake)
 
-## Installation
+### Installation
 
 *Describe the installation process, using `inline code blocks` to indicate terminal commands.*
 
-## Usage
+### Usage
 
 *Write usage instructions, including configuration details, settings or arguments available.*
 
-## License
+### License
 
 See`LICENSE.md`.
