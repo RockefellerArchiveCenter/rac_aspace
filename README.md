@@ -8,12 +8,12 @@
 
 Target, extract, and modify structured data from ArchiveSpace to allow users to export, update, add, and delete data. Data helpers leverage the abstraction layer of ArchivesSnake to get and post changes back to a JSONModel object(s) either in bulk, or by specifying a unique identifier. Data helpers enable cleanup tasks, changes to conform to new organizational policies and procedures, and to validate against existing archival and institutional standards. Data helper functionality includes:
 
-- Retreive and modify notes attached to archival objects or resources
-- Retreive and modify location data
+- Retrieve and modify notes attached to archival objects or resources
+- Retrieve and modify location data
 - Retrieve and modify container data
 - Identify unlinked agents, subjects, top containers, and digital objects
 - Identify and retrieve undated archival objects
-- Identify, retrieve, and modify (add strucutured dates to) date expressions
+- Identify, retrieve, and modify (add structured dates to) date expressions
 - Enable user input to target specfic objects and resources to retrieve or modify data
 - Enable user input for configuration
 
