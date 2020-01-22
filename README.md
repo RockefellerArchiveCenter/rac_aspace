@@ -15,7 +15,7 @@ Target, extract, and modify structured data from ArchiveSpace to allow users to 
 - Identify and retrieve undated archival objects
 - Identify, retrieve, and modify (add structured dates to) date expressions
 - Enable user input to target specfic objects and resources to retrieve or modify data
-- Enable user input for configuration
+- Enable user input for initial setup of local configurations
 
 ### Serialize
 
