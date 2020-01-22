@@ -15,8 +15,8 @@
 The RAC_ASpace library improves upon the ArchivesSnake saving functionality by gerneralizing processes and making it easier to save new JSON data and push that back up to ArchivesSpace.
 
 We plan to do that by:
-  * Generalizing the transformation from a JSONModel object fetched by ASNake to editable JSON
-  * Simplify the process of saving new JSON content to arrays by automated processes to help create the proper data structure and by programmatically identifying the correct index location for new material 
+  * Generalizing the transformation from a JSONModel object fetched by ArchivesSnake to editable JSON
+  * Simplify the process of saving new JSON content to arrays by automated processes to help create the proper data structure and by programmatically identifying the correct index location for new material
   * Making Create and Update methods for pushing new or updated JSON data back to ArchivesSpace
 
 ### Delete in ArchivesSpace
