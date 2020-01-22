@@ -8,7 +8,7 @@
 
 ### Serialize
 
-Simplify and standardize writing ArchivesSpace data obtained form the data helpers to an external serialization. Serialization formats should include CSV, TSV, EAD, and METS.
+Simplify and standardize writing ArchivesSpace data obtained from the data helpers to an external serialization. Serialization formats should include CSV, TSV, EAD, and METS.
 
 Serializing data from ArchivesSpace enables the repurposing, editing, manipulation, and evaluation of the data.
 
