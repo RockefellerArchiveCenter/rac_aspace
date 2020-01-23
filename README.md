@@ -6,8 +6,11 @@
 
 ### Data Helpers
 
-
 ### Serialize
+
+Simplify and standardize writing ArchivesSpace data obtained from the data helpers to an external tabular data serialization. Serialization formats should include CSV and TSV, and enable setup with column headings and the naming of output files.
+
+Serializing tabular data from ArchivesSpace enables the repurposing, editing, manipulation, and evaluation of the data.
 
 
 ### Save in ArchivesSpace
