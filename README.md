@@ -42,6 +42,11 @@ Serializing tabular data from ArchivesSpace enables the repurposing, editing, ma
 
 ### Save in ArchivesSpace
 
+The RAC_ASpace library improves upon the ArchivesSnake saving functionality by gerneralizing processes and making it easier to save new JSON data and push that back up to ArchivesSpace.
+
+We plan to do that by:
+  * Generalizing the transformation from a JSONModel object fetched by ArchivesSnake to editable JSON
+  * Making Create and Update methods for pushing new or updated JSON data back to ArchivesSpace
 
 ### Delete in ArchivesSpace
 
