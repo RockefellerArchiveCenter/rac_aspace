@@ -1,3 +1,8 @@
+import raw_input
+
+from fuzzywuzzy import fuzz
+
+
 def get_note_text(note):
     """Returns note content as a list."""
     def parse_subnote(subnote):
@@ -23,14 +28,28 @@ def get_note_text(note):
         return (parse_subnote(sn) for sn in note.subnotes)
 
 
-def notes_by_type(notes_array, note_type):
-    """Returns notes in a notes array which match a note type."""
-    return [note for note in notes_array if note.jsonmodel_type == note_type]
+def text_in_note(note, query_string):
+    """Returns a boolean indicating whether a string was found in note text.
+    Uses fuzzy matching."""
+    CONFIDENCE_RATIO = 97
+    note_content = get_note_text(note)
+    ratio = fuzz.token_sort_ratio(note_content.lower(), search_string.lower())
+    return (True if ratio > CONFIDENCE_RATIO else False)
 
 
-def dates_by_type(dates_array, date_type):
-    "Returns a list of dates which match a date type."
-    return [date for date in dates_array if date.jsonmodel_type == date_type]
+def of_type(list, desired_type):
+    """Returns objects in a list which match a specific jsonmodel_type."""
+    return [obj for obj in list if obj.jsonmodel_type == desired_type]
+
+
+def of_type_longer(list, desired_type):
+    """Move verbose version of `of_type` to demonstrate a more verbose
+    approach."""
+    objects = []
+    for obj in list:
+        if obj.jsonmodel_type == desired_type:
+            objects.append(obj)
+    return objects
 
 
 def get_locations(archival_object):
@@ -71,7 +90,7 @@ def format_resource_id(resource, separator=":"):
     resource_id = []
     for x in range(3):
         try:
-            resource_id.append(getattr(resource, "id_{}".format(x)))
+            resource_id.append(getattr(resource, "id_{0}".format(x)))
         except AttributeError:
             break
     return separator.join(resource_id)
@@ -104,7 +123,7 @@ def expression(date):
     if date.expression:
         return date.expression
     if date.date_end:
-        return "{} - {}".format(date.date_start, date.date_end)
+        return "{0} - {1}".format(date.date_start, date.date_end)
     else:
         return date.date_start
 
@@ -113,7 +132,18 @@ def associated_objects(top_container):
     """Return all the archival objects associated with a top container."""
     pass
 # probably have to do some SOLR stuff
-#
+
+
+def indicates_restriction(rights_statement):
+    """Returns a boolean indicating whether or not a rights statement
+    indicates a current restriction."""
+    # If rights_statement.date_end is before today:
+        # return False
+    # for rights_granted in rights_statement.rights_granted:
+        # if rights_granted.date_end is after today:
+            # if rights_granted.act in ["disallow", "conditional"]:
+                # return True
+    # return False
 
 
 def is_restricted(archival_object):
@@ -125,15 +155,26 @@ def is_restricted(archival_object):
     Also looks for associated rights statements which indicate object may be
     restricted.
     """
-    pass
-# loop through notes, looking for conditions govering access
-# look for specific text in matches
-# return True
-# return False
+    query_string = "materials are restricted"
+    for note in archival_object.notes:
+        if note.jsonmodel_type == 'accessrestrict':
+            if text_in_note(note, query_string):
+                return True
+    for rights_statement in archival_object.rights_statement:
+        if indicates_restriction(rights_statement):
+            return True
+    return False
 
 
 def get_user_input(prompt):
-    """Allows users to input data."""
+    """
+    Allows users to input data.
+
+    This could be used like:
+    ```
+    variable = get_user_input("Please enter your name here:")
+    ```
+    """
     print(prompt)
     return raw_input()
 
