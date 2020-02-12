@@ -9,6 +9,7 @@ file_path = os.path.join(
 
 FILE_TYPE_CHOICES = ["csv", "tsv"]
 
+
 def open_file(file_path):
     """"Opens file to be written to"""
     if file_type = csv:
@@ -16,9 +17,11 @@ def open_file(file_path):
     else:
         writer = csv.writer(open(file_path, delimiter='\t'))
 
+
 def create_headings(column_headings):
     """Creates a spreadsheet with column headings"""
     writer.writerow(column_headings)
+
 
 def write_data(data):
     """"Writes data to a csv file"""
@@ -27,9 +30,14 @@ def write_data(data):
         heading_data = d.heading
         writer.writerow([column_data, heading_data])
 
+
 def get_parser():
     parser = argparse.ArgumentParser()
-    parser.add_argument("file_type", choices=FILE_TYPE_CHOICES, help="The type of file you would like to output data to (tsv or csv)")
+    parser.add_argument(
+        "file_type",
+        choices=FILE_TYPE_CHOICES,
+        help="The type of file you would like to output data to (tsv or csv)")
+
 
 parser = get_parser()
 args = parser.parse_args()
