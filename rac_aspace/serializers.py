@@ -1,6 +1,11 @@
 import argparse
 from configparser import ConfigParser
 import csv
+import os
+
+
+config = ConfigParser()
+config.read("local_settings.cfg")
 
 file_path = os.path.join(
     os.path.abspath(os.path.dirname(__file__)), config.get(
@@ -9,9 +14,14 @@ file_path = os.path.join(
 
 FILE_TYPE_CHOICES = ["csv", "tsv"]
 
+column_headings = []
 
-def open_file(file_path):
+data = 'data.json'
+
+
+def open_file(args, file_path):
     """"Opens file to be written to"""
+    file_type = args.file_type
     if file_type == 'csv':
         writer = csv.writer(open(file_path, 'w'))
     else:
@@ -38,9 +48,9 @@ def get_parser():
         choices=FILE_TYPE_CHOICES,
         help="The type of file you would like to output data to (tsv or csv)")
 
-
 parser = get_parser()
 args = parser.parse_args()
+global writer
 open_file(file_path)
-create_headings([column, headings])
+create_headings([column_headings])
 write_data(data)
