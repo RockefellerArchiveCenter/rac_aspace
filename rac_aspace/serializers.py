@@ -12,7 +12,7 @@ FILE_TYPE_CHOICES = ["csv", "tsv"]
 
 def open_file(file_path):
     """"Opens file to be written to"""
-    if file_type = csv:
+    if file_type == 'csv':
         writer = csv.writer(open(file_path, 'w'))
     else:
         writer = csv.writer(open(file_path, delimiter='\t'))
