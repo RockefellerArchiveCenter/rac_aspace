@@ -1,6 +1,6 @@
 import argparse
 from configparser import ConfigParser
-import csv
+# import csv
 import os
 
 
@@ -16,24 +16,27 @@ FILE_TYPE_CHOICES = ["csv", "tsv"]
 
 column_headings = []
 
-data = 'data.json'
+column = 'test'
+heading = 'data'
+
+data = [column, heading]
 
 
 def open_file(args, file_path):
-    """"Opens file to be written to"""
-    file_type = args.file_type
-    if file_type == 'csv':
-        writer = csv.writer(open(file_path, 'w'))
-    else:
-        writer = csv.writer(open(file_path, delimiter='\t'))
+    """"Opens file to be written to and sets serialization type"""
+    # file_type = args.file_type
+    # if file_type == 'csv':
+    # writer = csv.writer(open(file_path, 'w'))
+    # else:
+    # writer = csv.writer(open(file_path, delimiter='\t'))
 
 
-def create_headings(column_headings):
+def create_headings(column_headings, writer):
     """Creates a spreadsheet with column headings"""
     writer.writerow(column_headings)
 
 
-def write_data(data):
+def write_data(data, writer):
     """"Writes data to a csv file"""
     for d in data:
         column_data = d.column
