@@ -110,9 +110,9 @@ In order to contribute changes, you must first set up rac_aspace for local devel
 
 To do this:
 
-  1. Fork rac_ascpace GitHub repo
+  1. Fork the rac_ascpace GitHub repo
   2. Clone the fork locally
-  3. Install a local copy into a virtualenv
+  3. Install requirements in `requirements.txt` (we recommend using [virtual](https://packaging.python.org/guides/installing-using-pip-and-virtual-environments/) to keep your dependencies isolated)
   4. Create a new branch, named after the issue number your work corresponds to
   5. Make changes and push your branch
 
@@ -120,7 +120,7 @@ After you have finished making your changes on the new branch, your code must pa
 
 To do this:
 
-  1. Run unit tests and linters by consulting Tests section for instructions (You can use Git pre-commit hooks to run scripts before committing)
+  1. Run unit tests and linters by consulting Tests section for instructions
   2. Commit changes to your working branch and push the branch to the rac_aspace GitHub
   3. Open a pull request against master and use the Pull Request Template to describe the changes you are contributing
 
