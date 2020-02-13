@@ -48,6 +48,7 @@ def get_parser():
         choices=FILE_TYPE_CHOICES,
         help="The type of file you would like to output data to (tsv or csv)")
 
+
 parser = get_parser()
 args = parser.parse_args()
 global writer
