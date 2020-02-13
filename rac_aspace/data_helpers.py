@@ -33,7 +33,7 @@ def text_in_note(note, query_string):
     Uses fuzzy matching."""
     CONFIDENCE_RATIO = 97
     note_content = get_note_text(note)
-    ratio = fuzz.token_sort_ratio(note_content.lower(), search_string.lower())
+    ratio = fuzz.token_sort_ratio(note_content.lower(), query_string.lower())
     return (True if ratio > CONFIDENCE_RATIO else False)
 
 
@@ -138,11 +138,11 @@ def indicates_restriction(rights_statement):
     """Returns a boolean indicating whether or not a rights statement
     indicates a current restriction."""
     # If rights_statement.date_end is before today:
-        # return False
+    # return False
     # for rights_granted in rights_statement.rights_granted:
-        # if rights_granted.date_end is after today:
-            # if rights_granted.act in ["disallow", "conditional"]:
-                # return True
+    # if rights_granted.date_end is after today:
+    # if rights_granted.act in ["disallow", "conditional"]:
+    # return True
     # return False
 
 
