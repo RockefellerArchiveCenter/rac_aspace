@@ -138,12 +138,12 @@ def indicates_restriction(rights_statement):
     """Returns a boolean indicating whether or not a rights statement
     indicates a current restriction."""
     # If rights_statement.date_end is before today:
-    # return False
+        # return False
     # for rights_granted in rights_statement.rights_granted:
-    # if rights_granted.date_end is after today:
-    # if rights_granted.act in ["disallow", "conditional"]:
-    # return True
-    # return False
+        # if rights_granted.date_end is after today:
+            # if rights_granted.act in ["disallow", "conditional"]:
+                # return True
+            # return False
 
 
 def is_restricted(archival_object):
