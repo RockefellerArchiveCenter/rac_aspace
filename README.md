@@ -102,6 +102,40 @@ $ autopep8 --in-place --aggressive -r .
 $ flake8
 ```
 
+## Contributing
+
+Contributions to rac_aspace are welcome, and all contributors will be acknowledged! Any contributions made to rac_aspace must be available for public distribution under the project’s MIT License.
+
+### How to Contribute
+
+  * Report a bug - Open a new issue. When prompted, select the Report Bug Issue Template and describe the bug encountered and any additional information.
+  * Fix a bug - Search for issues related to bugs. Follow the instructions for contributing changes below.
+  * Request a feature - Open a new issue. When prompted, select the Feature Request Issue Template and describe the proposed enhancement.
+  * Implement a feature request - Search for issues related to feature requests. Follow instructions for contributing changes below.
+  * You may contribute code for bugs or features that you have reported, just please file an issue first.
+
+### Contributing Changes
+
+In order to contribute changes, you must first set up rac_aspace for local development.
+
+To do this:
+
+  1. Fork the rac_ascpace GitHub repo
+  2. Clone the fork locally
+  3. Install requirements in `requirements.txt` (we recommend using [virtual](https://packaging.python.org/guides/installing-using-pip-and-virtual-environments/) to keep your dependencies isolated)
+  4. Create a new branch, named after the issue number your work corresponds to
+  5. Make changes and push your branch
+
+After you have finished making your changes on the new branch, your code must pass all required tests before committing changes and follow the project’s conventions for submitting a pull request to the master branch on the rac_aspace GitHub repo.
+
+To do this:
+
+  1. Run unit tests and linters by consulting Tests section for instructions
+  2. Commit changes to your working branch and push the branch to the rac_aspace GitHub
+  3. Open a pull request against master and use the Pull Request Template to describe the changes you are contributing
+
+Pull requests will be reviewed and merged by the rac_aspace maintainers.
+
 ### License
 
 See`LICENSE.md`.
