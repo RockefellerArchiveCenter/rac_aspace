@@ -1,6 +1,6 @@
 # rac_aspace
 
-*Write a brief description of the project, explaining what it does in a couple of sentences. test*
+*Write a brief description of the project, explaining what it does in a couple of sentences.*
 
 ## Functionality
 
