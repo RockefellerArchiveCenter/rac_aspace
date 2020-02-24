@@ -35,7 +35,7 @@ def main():
     parser = get_parser()
     args = parser.parse_args()
     filename = args.filename
-    if 'csv' in filename:
+    if '.csv' in filename:
         write = CSVWriter(filename, data)
         write.run()
     else:
