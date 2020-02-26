@@ -76,6 +76,12 @@ Add software operating systems, programming languages or libraries which are req
 *   Python 3.4 or higher
 *   [ArchivesSnake](https://github.com/archivesspace-labs/ArchivesSnake)
 *   [tox](https://tox.readthedocs.io/) (for running tests)
+*   [pre-commit](https://pre-commit.com/) (for running linters before committing)
+    *   After installing pre-commit, install the git-hook scripts:
+
+    ```
+    $ pre-commit install
+    ```
 
 ### Installation
 
