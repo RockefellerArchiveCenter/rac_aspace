@@ -3,6 +3,16 @@ import raw_input
 from fuzzywuzzy import fuzz
 
 
+def check_dictionary(func):
+    def inner(*args, **kwargs):
+        if not isinstance(args, dict):
+            print('Parameter is not a dictionary')
+            return
+        return func(*args, **kwargs)
+    return inner
+
+
+@check_dictionary
 def get_note_text(note):
     """Returns note content as a list."""
     def parse_subnote(subnote):
