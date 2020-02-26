@@ -1,5 +1,3 @@
-import raw_input
-
 from fuzzywuzzy import fuzz
 
 
