@@ -25,9 +25,7 @@ class CSVWriter(Serializer):
 
 class TSVWriter(Serializer):
 
-    def delimiter(self):
-        delimiter = "'\t'"
-        return delimiter
+    delimiter = "'\t'"
 
 
 def get_parser():
