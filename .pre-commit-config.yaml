@@ -7,3 +7,4 @@ repos:
     rev: v1.5
     hooks:
     -   id: autopep8
+        args: [--exit-code, --aggressive, --diff, -r]
