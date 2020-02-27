@@ -1,16 +1,26 @@
-import argparse
 import csv
+
+
+data = {}
 
 
 class Serializer:
 
     def __init__(self, filename, filemode="w"):
+        """
+        Currently this class expects to get the following parameters:
+        Filename: a filename including the file extension
+        Data: Data in a dictionary. Doesn't handle nested arrays.
+        Filemode: Optional argument set to work with already existing files.
+        """
         self.filename = filename
         self.fieldnames = list(data.keys())
         self.data = data
-        self.delimiter = delimiter
 
-    def run(self):
+    def write_data(self, data):
+        """
+        This function writes the data passed to it to a csv or tsv.
+        """
         with open(self.filename, 'w') as f:
             writer = csv.DictWriter(
                 f, fieldnames=self.fieldnames, delimiter=self.delimiter)
@@ -26,32 +36,3 @@ class CSVWriter(Serializer):
 class TSVWriter(Serializer):
 
     delimiter = "'\t'"
-
-
-def get_parser():
-    parser = argparse.ArgumentParser()
-    parser.add_argument(
-        "filename",
-        help="The desired name of your output file.")
-    return parser
-
-
-data = {}
-fieldnames = []
-delimiter = ''
-parser = get_parser()
-args = parser.parse_args()
-filename = args.filename
-
-
-def main():
-    if '.csv' in filename:
-        write = CSVWriter(filename, data)
-        write.run()
-    else:
-        write = TSVWriter(filename, data)
-        write.run()
-
-
-if __name__ == "__main__":
-    main()
