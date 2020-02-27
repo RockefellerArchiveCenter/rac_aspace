@@ -13,7 +13,7 @@ class Serializer:
     def run(self):
         with open(self.filename, 'w') as f:
             writer = csv.DictWriter(
-                f, fieldnames=fieldnames, delimiter=delimiter)
+                f, fieldnames=self.fieldnames, delimiter=self.delimiter)
             writer.writeheader()
             writer.writerows(data)
 
