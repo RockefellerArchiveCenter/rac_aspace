@@ -20,9 +20,7 @@ class Serializer:
 
 class CSVWriter(Serializer):
 
-    def delimiter(self):
-        delimiter = "','"
-        return delimiter
+    delimiter = "','"
 
 
 class TSVWriter(Serializer):
