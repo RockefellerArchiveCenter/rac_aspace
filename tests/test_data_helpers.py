@@ -2,7 +2,9 @@
 Unit tests for Data Helpers
 """
 import unittest
-from .data_helpers import get_locations
+
+
+from rac_aspace.data_helpers import get_locations
 
 
 class TestDataHelpers(unittest.TestCase):
@@ -11,7 +13,8 @@ class TestDataHelpers(unittest.TestCase):
     """
 
     def test_get_locations(self):
-        self.assertTrue(len(locations))
+        self.assertTrue(locations)
+        self.assertIsInstance(locations, list)
 
 
 if __name__ == '__main__':
