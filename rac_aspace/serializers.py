@@ -4,7 +4,7 @@ import csv
 
 class Serializer:
 
-    def __init__(self, filename, delimiter, data):
+    def __init__(self, filename, filemode="w"):
         self.filename = filename
         self.fieldnames = list(data.keys())
         self.data = data
