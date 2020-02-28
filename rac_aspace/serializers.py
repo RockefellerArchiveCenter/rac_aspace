@@ -19,8 +19,8 @@ class Serializer:
         This function writes the data passed to it to a csv or tsv.
         Data: Data in a dictionary. Doesn't handle nested arrays.
         """
-        self.fieldnames = list(data.keys())
-        self.data = data
+        data = data
+        fieldnames = list(data.keys())
         with open(self.filename, 'w') as f:
             writer = csv.DictWriter(
                 f, fieldnames=self.fieldnames, delimiter=self.delimiter)
