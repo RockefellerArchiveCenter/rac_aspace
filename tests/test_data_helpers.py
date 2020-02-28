@@ -13,6 +13,8 @@ class TestDataHelpers(unittest.TestCase):
     """
 
     def test_get_locations(self):
+        archival_object = {'a': 'b'}
+        locations = get_locations(archival_object)
         self.assertTrue(locations)
         self.assertIsInstance(locations, list)
 
