@@ -1,5 +1,3 @@
-import raw_input
-
 from fuzzywuzzy import fuzz
 
 
@@ -35,21 +33,6 @@ def text_in_note(note, query_string):
     note_content = get_note_text(note)
     ratio = fuzz.token_sort_ratio(note_content.lower(), query_string.lower())
     return (True if ratio > CONFIDENCE_RATIO else False)
-
-
-def of_type(list, desired_type):
-    """Returns objects in a list which match a specific jsonmodel_type."""
-    return [obj for obj in list if obj.jsonmodel_type == desired_type]
-
-
-def of_type_longer(list, desired_type):
-    """Move verbose version of `of_type` to demonstrate a more verbose
-    approach."""
-    objects = []
-    for obj in list:
-        if obj.jsonmodel_type == desired_type:
-            objects.append(obj)
-    return objects
 
 
 def get_locations(archival_object):
@@ -164,23 +147,3 @@ def is_restricted(archival_object):
         if indicates_restriction(rights_statement):
             return True
     return False
-
-
-def get_user_input(prompt):
-    """
-    Allows users to input data.
-
-    This could be used like:
-    ```
-    variable = get_user_input("Please enter your name here:")
-    ```
-    """
-    print(prompt)
-    return raw_input()
-
-
-def get_config():
-    """Sets up configuration values necessary for ASpace."""
-    pass
-    # look for file
-    # look for env variables
