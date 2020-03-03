@@ -6,42 +6,7 @@
 
 ### Data Helpers
 
-Target, extract, and modify structured data from ArchiveSpace to allow users to export, update, add, and delete data. Data helpers leverage the abstraction layer of ArchivesSnake to get and post changes back to a JSONModel object(s) either in bulk, or by specifying a unique identifier. Data helpers enable cleanup tasks, changes to conform to new organizational policies and procedures, and to validate against existing archival and institutional standards. Data helper functionality includes:
-
-#### Retrieve
-Get specific fields from a data object.
-
-- ~~Notes attached to archival objects or resources~~ see `of_type()` and `get_note_text()`
-- ~~Location data~~ see `get_locations()`
-- Container data
-- Date data
-- ~~Data fields within an AS object, including arrays within arrays~~ see conversation about list comprehension
-- ~~Unlinked agents, subjects, top containers, and digital objects~~ see `get_orphans()`
-
-#### Infer
-Return properties based on other data elements, either on the same object or another.
-
-- ~~Date expression based on date type and start/end dates~~ see `expression()`
-- ~~List of all the restricted archival objects associated with a given top container~~ see `text_in_note()` and `is_restricted()` and `indicates_restriction()`
-- see also `closest_value()`
-
-#### Extend relationships
-Find related objects which are not related via `ref` properties (and so cannot be traversed in the ASpace abstraction layer)
-
-- ~~Archival objects associated with a top container~~ see `associated_objects()` 
-
-#### Concatenate Fields
-Combine discrete data elements to form a single value.
-
-- ~~Container type plus identifier~~ see `format_container()`
-- ~~Four-part id (id_0 plus id_1 plus id_2 plus id_3)~~  see `format_resource_id()`
-- ~~Note content. Depending on note type, this requires iterating through subnotes.~~ see `get_note_text()`
-- see also `format_location()`
-
-#### Enable User Input
-
-- ~~To target specific objects and resources in order to retrieve or modify data~~ see `get_user_input()`
-- ~~For initial setup of local configurations~~ see `get_config()`
+`rac_aspace` provides data helpers which provide additional functionality on top of the abstraction layer of ArchivesSnake to retrieve, infer and concatenate data elements. They can also extend (or invert) relationships between different objects, such as locations and archival objects. Data helpers enable cleanup tasks, changes to conform to new organizational policies and procedures, and to validate against existing archival and institutional standards.
 
 ### Serialize
 
