@@ -6,7 +6,7 @@ elements. They can also extend (or invert) relationships between different
 objects.
 
 """
-
+import re
 from fuzzywuzzy import fuzz
 
 
