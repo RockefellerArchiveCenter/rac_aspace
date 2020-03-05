@@ -1,4 +1,5 @@
 import raw_input
+import re
 
 from fuzzywuzzy import fuzz
 
@@ -184,3 +185,10 @@ def get_config():
     pass
     # look for file
     # look for env variables
+
+
+def strip_html_tags(string):
+    """Strips HTML tags from a string."""
+    tag_match = re.compile('<.*?>')
+    cleantext = re.sub(tag_match, '', string)
+    return cleantext
