@@ -14,7 +14,7 @@ def check_list(func):
     def inner(*args, **kwargs):
         if not [isinstance(a, list) for a in args]:
             raise TypeError('{} is not a list'.format(args[0]))
-        if [len(a)==0 for a in args]:
+        if [len(a) == 0 for a in args]:
             raise AttributeError('{} is empty'.format(args[0]))
         return func(*args, **kwargs)
     return inner
