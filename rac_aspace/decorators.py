@@ -20,6 +20,14 @@ def check_list(func):
     return inner
 
 
+def check_str(func):
+    def inner(*args, **kwargs):
+        if not [isinstance(a, str) for a in args]:
+            raise TypeError('{} is not a string'.format(args[0]))
+        return func(*args, **kwargs)
+    return inner
+
+
 def validate_dictionary(func):
     def inner(*args, **kwargs):
         data = func(*args, **kwargs)
@@ -33,6 +41,14 @@ def validate_list(func):
     def inner(*args, **kwargs):
         data = func(*args, **kwargs)
         if not isinstance(data, list):
-            raise TypeError('{} is not a dictionary'.format(args[0]))
+            raise TypeError('{} is not a list'.format(args[0]))
+        return func(*args, **kwargs)
+    return inner
+
+def validate_string(func):
+    def inner(*args, **kwargs):
+        data = func(*args, **kwargs)
+        if not isinstance(data, string):
+            raise TypeError('{} is not a string'.format(args[0]))
         return func(*args, **kwargs)
     return inner
