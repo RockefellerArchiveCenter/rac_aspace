@@ -56,3 +56,13 @@ def validate_string(func):
                 raise TypeError('{} is not a string'.format(args[0]))
         return func(*args, **kwargs)
     return inner
+
+
+def validate_boolean(func):
+    def inner(*args, **kwargs):
+        for a in args:
+            data = func(*args, **kwargs)
+            if not isinstance(data, bool):
+                raise TypeError('{} is not a boolean'.format(args[0]))
+        return func(*args, **kwargs)
+    return inner

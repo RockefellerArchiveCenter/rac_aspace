@@ -1,10 +1,13 @@
 import raw_input
 
 from fuzzywuzzy import fuzz
-from decorators import check_dictionary
+from decorators import check_dictionary, check_str, check_list,
+                       validate_list, validate_dictionary, validate_string,
+                       validate_boolean
 
 
 @check_dictionary
+@validate_list
 def get_note_text(note):
     """Returns note content as a list."""
     def parse_subnote(subnote):
@@ -29,7 +32,9 @@ def get_note_text(note):
     else:
         return (parse_subnote(sn) for sn in note.subnotes)
 
-
+@check_dictionary
+@check_str
+@validate_boolean
 def text_in_note(note, query_string):
     """Returns a boolean indicating whether a string was found in note text.
     Uses fuzzy matching."""
@@ -39,21 +44,8 @@ def text_in_note(note, query_string):
     return (True if ratio > CONFIDENCE_RATIO else False)
 
 
-def of_type(list, desired_type):
-    """Returns objects in a list which match a specific jsonmodel_type."""
-    return [obj for obj in list if obj.jsonmodel_type == desired_type]
-
-
-def of_type_longer(list, desired_type):
-    """Move verbose version of `of_type` to demonstrate a more verbose
-    approach."""
-    objects = []
-    for obj in list:
-        if obj.jsonmodel_type == desired_type:
-            objects.append(obj)
-    return objects
-
-
+@check_dictionary
+@validate_list
 def get_locations(archival_object):
     """
     Returns a list of locations objects associated with an
@@ -65,6 +57,8 @@ def get_locations(archival_object):
     return locations
 
 
+@check_dictionary
+@validate_string
 def format_location(location):
     """Return a human-readable string for a location."""
     pass
@@ -75,6 +69,8 @@ def format_location(location):
 # return format string
 
 
+@check_dictionary
+@validate_string
 def format_container(top_container):
     """
     Returns a human-readable concatenation of top container type
@@ -84,6 +80,9 @@ def format_container(top_container):
                             top_container.indicator)
 
 
+@check_dictionary
+@check_str
+@validate_string
 def format_resource_id(resource, separator=":"):
     """
     Returns the four-part ID for a resource record. Accepts an optional
@@ -98,6 +97,7 @@ def format_resource_id(resource, separator=":"):
     return separator.join(resource_id)
 
 
+@check_dictionary
 def closest_value(archival_object, key):
     """
     Returns the closest matching for a key, iterating up through an object's
@@ -110,6 +110,8 @@ def closest_value(archival_object, key):
             return closest_value(ancestor, key)
 
 
+@check_list
+@validate_dictionary
 def get_orphans(object_list, null_attribute):
     """
     Generator function which returns objects that do not have a value in a
@@ -120,6 +122,8 @@ def get_orphans(object_list, null_attribute):
             yield obj
 
 
+@check_dictionary
+@validate_string
 def expression(date):
     """Always returns a date expression for a date object."""
     if date.expression:
@@ -130,12 +134,16 @@ def expression(date):
         return date.date_start
 
 
+@check_dictionary
+@validate_list
 def associated_objects(top_container):
     """Return all the archival objects associated with a top container."""
     pass
 # probably have to do some SOLR stuff
 
 
+@check_dictionary
+@validate_boolean
 def indicates_restriction(rights_statement):
     """Returns a boolean indicating whether or not a rights statement
     indicates a current restriction."""
@@ -148,6 +156,8 @@ def indicates_restriction(rights_statement):
     # return False
 
 
+@check_dictionary
+@validate_boolean
 def is_restricted(archival_object):
     """
     Return a boolean which indicates if an object is restricted.
