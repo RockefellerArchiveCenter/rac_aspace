@@ -1,27 +1,37 @@
 import csv
 
 
-data = {}
-
-
 class Serializer:
 
     def __init__(self, filename, filemode="w"):
+        """Sets initial attributes for serializers.
+
+        Ensures that a filemode is provided which supports write operations, and
+        replaces the filename extension if it does not match the extension
+        specified by the class.
+
+        Args:
+            filename (str): a filename at which the data should be serialized.
+            filemode (str): Optional argument used when opening files.
         """
-        Currently this class expects to get the following parameters:
-        Filename: a filename including the file extension
-        Filemode: Optional argument set to work with already existing files.
-        """
+        if filemode.startswith("r"):
+            raise TypeError("Filemode must allow write operations.")
+        self.filemode = filemode
+        if filename.split(".")[-1] != self.extension:
+            if len(filename.split(".")) > 1:
+                filename = filename[:-len(filename.split(".")[-1])] + self.extension
+            else:
+                filename = "{}.{}".format(filename, self.extension)
         self.filename = filename
 
     def write_data(self, data):
+        """Writes data to a Serializer class.
+
+        Args:
+            data (dict or list): a sequence of dicts.
         """
-        This function writes the data passed to it to a csv or tsv.
-        Data: Data in a dictionary. Doesn't handle nested arrays.
-        """
-        data = data
-        fieldnames = list(data.keys())
-        with open(self.filename, 'w') as f:
+        fieldnames = list(data.keys() if isinstance(data, dict) else data[0].keys())
+        with open(self.filename, self.filemode) as f:
             writer = csv.DictWriter(
                 f, fieldnames=fieldnames, delimiter=self.delimiter)
             writer.writeheader()
@@ -29,10 +39,14 @@ class Serializer:
 
 
 class CSVWriter(Serializer):
+    """Writes data to a CSV file."""
 
-    delimiter = "','"
+    delimiter = ","
+    extension = "csv"
 
 
 class TSVWriter(Serializer):
+    """Writes data to a TSV file."""
 
-    delimiter = "'\t'"
+    delimiter = "\t"
+    extension = "tsv"
