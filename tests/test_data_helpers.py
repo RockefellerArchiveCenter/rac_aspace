@@ -2,15 +2,16 @@
 Unit tests for Data Helpers
 """
 import unittest
+import os
 
-from rac_aspace.data_helpers import get_locations, format_container
-
+from rac_aspace.data_helpers import get_locations, format_container, get_note_text
 
 class TestDataHelpers(unittest.TestCase):
     """
     Tests the data helper functions.
     """
 
+    # @mock.patch('get_locations')
     def test_get_locations(self):
         """
         Checks whether the function returns a list and if it is empty.
@@ -31,7 +32,6 @@ class TestDataHelpers(unittest.TestCase):
     def test_format_container(self):
         """
         Checks whether the function returns a string as expected.
-        Need to write a way to get the resource container information from AS.
 
         Args:
             top_container: a dictionary with key value pairs
@@ -42,7 +42,6 @@ class TestDataHelpers(unittest.TestCase):
         top_container = {'container_type': 'box', 'indicator': '1'}
         result = format_container(top_container)
         self.assertEqual(result, 'Box 1')
-
 
 if __name__ == '__main__':
     unittest.main()
