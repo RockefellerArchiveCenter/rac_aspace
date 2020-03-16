@@ -1,0 +1,4 @@
+-r base.txt
+tox==3.14.0
+pytest
+pre-commit==2.1.1
