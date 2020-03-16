@@ -1,9 +1,9 @@
 import raw_input
 
 from fuzzywuzzy import fuzz
-from decorators import check_dictionary, check_str, check_list,
-                       validate_list, validate_dictionary, validate_string,
-                       validate_boolean
+from decorators import (check_dictionary, check_str, check_list,
+                        validate_list, validate_dictionary,
+                        validate_string, validate_boolean)
 
 
 @check_dictionary
@@ -31,6 +31,7 @@ def get_note_text(note):
         return note.source.items.strip("]['").split(', ')
     else:
         return (parse_subnote(sn) for sn in note.subnotes)
+
 
 @check_dictionary
 @check_str

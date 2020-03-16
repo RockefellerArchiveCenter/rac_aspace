@@ -52,7 +52,7 @@ def validate_string(func):
     def inner(*args, **kwargs):
         for a in args:
             data = func(*args, **kwargs)
-            if not isinstance(data, string):
+            if not isinstance(data, str):
                 raise TypeError('{} is not a string'.format(args[0]))
         return func(*args, **kwargs)
     return inner
