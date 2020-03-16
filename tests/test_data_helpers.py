@@ -5,7 +5,8 @@ import unittest
 import os
 
 from rac_aspace.data_helpers import (get_locations, format_container,
-                                    format_resource_id)
+                                     format_resource_id)
+
 
 class TestDataHelpers(unittest.TestCase):
     """
@@ -49,12 +50,13 @@ class TestDataHelpers(unittest.TestCase):
         """
 
         """
-        resource_id =[]
+        resource_id = []
         separator = ":"
         resource = {'id_0': 'FA', 'id_1': '01', 'id_2': '02', 'id_3': '03'}
         result = format_resource_id(resource, separator)
         self.assertIsInstance(result, str)
         self.assertEqual(result, 'FA:01:02:03')
+
 
 if __name__ == '__main__':
     unittest.main()
