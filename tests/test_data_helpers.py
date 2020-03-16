@@ -4,7 +4,8 @@ Unit tests for Data Helpers
 import unittest
 import os
 
-from rac_aspace.data_helpers import get_locations, format_container, get_note_text
+from rac_aspace.data_helpers import (get_locations, format_container,
+                                    format_resource_id)
 
 class TestDataHelpers(unittest.TestCase):
     """
@@ -41,7 +42,19 @@ class TestDataHelpers(unittest.TestCase):
         """
         top_container = {'container_type': 'box', 'indicator': '1'}
         result = format_container(top_container)
-        self.assertEqual(result, 'Box 1')
+        self.assertIsInstance(result, str)
+        self.assertEqual(result, 'box 1')
+
+    def test_format_resource_id(self):
+        """
+
+        """
+        resource_id =[]
+        separator = ":"
+        resource = {'id_0': 'FA', 'id_1': '01', 'id_2': '02', 'id_3': '03'}
+        result = format_resource_id(resource, separator)
+        self.assertIsInstance(result, str)
+        self.assertEqual(result, 'FA:01:02:03')
 
 if __name__ == '__main__':
     unittest.main()
