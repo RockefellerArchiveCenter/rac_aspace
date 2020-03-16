@@ -18,8 +18,9 @@ class Serializer:
             raise TypeError("Filemode must allow write operations.")
         self.filemode = filemode
         if filename.split(".")[-1] != self.extension:
-            if len(filename.split(".")) > 1:
-                filename = filename[:-len(filename.split(".")[-1])] + self.extension
+            extension_len = len(filename.split(".")[-1])
+            if extension_len > 1:
+                filename = filename[:-extension_len] + self.extension
             else:
                 filename = "{}.{}".format(filename, self.extension)
         self.filename = filename
@@ -30,7 +31,9 @@ class Serializer:
         Args:
             data (dict or list): a sequence of dicts.
         """
-        fieldnames = list(data.keys() if isinstance(data, dict) else data[0].keys())
+        fieldnames = list(
+            data.keys() if isinstance(
+                data, dict) else data[0].keys())
         with open(self.filename, self.filemode) as f:
             writer = csv.DictWriter(
                 f, fieldnames=fieldnames, delimiter=self.delimiter)
