@@ -17,10 +17,10 @@ class Serializer:
         if filemode.startswith("r"):
             raise TypeError("Filemode must allow write operations.")
         self.filemode = filemode
-        if filename.split(".")[-1] != self.extension:
-            extension_len = len(filename.split(".")[-1])
-            if extension_len > 1:
-                filename = filename[:-extension_len] + self.extension
+        extension = filename.split(".")[-1]
+        if extension != self.extension:
+            if len(filename.split(".")) > 1:
+                filename = filename[:-len(extension)] + self.extension
             else:
                 filename = "{}.{}".format(filename, self.extension)
         self.filename = filename
