@@ -1,4 +1,11 @@
-import raw_input
+"""Data Helpers
+
+Data helpers leverage the abstraction layer of ArchivesSnake to provide
+additional functionality for retrieving, inferring and concatenating data
+elements. They can also extend (or invert) relationships between different
+objects.
+
+"""
 
 from fuzzywuzzy import fuzz
 from decorators import (check_dictionary, check_str, check_list,
@@ -9,37 +16,62 @@ from decorators import (check_dictionary, check_str, check_list,
 @check_dictionary
 @validate_list
 def get_note_text(note):
-    """Returns note content as a list."""
+    """Parses note content from different note types.
+
+    Args:
+        note (dict): an ArchivesSpace note object.
+
+    Returns:
+        list: a list containing note content.
+    """
     def parse_subnote(subnote):
-        """Returns content in subnotes"""
+        """Parses note content from subnotes.
+
+        Args:
+            subnote (dict): an ArchivesSpace subnote object.
+
+        Returns:
+            list: a list containing subnote content.
+        """
         if subnote.jsonmodel_type in [
                 'note_orderedlist', 'note_definedlist', 'note_index',
                 'note_chronology']:
-            return subnote.items
+            content = subnote.items
         elif subnote.jsonmodel_type == 'note_bibliography':
             data = []
             data.append(subnote.content)
             data.append(subnote.items)
-            return data
+            content = data
         else:
-            return subnote.content if isinstance(
+            content = subnote.content if isinstance(
                 subnote.content, list) else [subnote.content]
+        return content
 
     if note.jsonmodel_type == "note_singlepart":
-        return note.source.content.strip("]['").split(', ')
+        content = note.source.content.strip("]['").split(', ')
     elif note.jsonmodel_type == "note_index":
-        return note.source.items.strip("]['").split(', ')
+        content = note.source.items.strip("]['").split(', ')
     else:
-        return (parse_subnote(sn) for sn in note.subnotes)
+        content = (parse_subnote(sn) for sn in note.subnotes)
+    return content
 
 
 @check_dictionary
 @check_str
 @validate_boolean
 def text_in_note(note, query_string):
-    """Returns a boolean indicating whether a string was found in note text.
-    Uses fuzzy matching."""
+    """Performs fuzzy searching against note text.
+
+    Args:
+        note (dict): an ArchivesSpace note object.
+        query_string (str): a string to match against.
+
+    Returns:
+        bool: True if a match is found for `query_string`, False if no match is
+            found.
+    """
     CONFIDENCE_RATIO = 97
+    """int: Minimum confidence ratio to match against."""
     note_content = get_note_text(note)
     ratio = fuzz.token_sort_ratio(note_content.lower(), query_string.lower())
     return (True if ratio > CONFIDENCE_RATIO else False)
@@ -48,9 +80,13 @@ def text_in_note(note, query_string):
 @check_dictionary
 @validate_list
 def get_locations(archival_object):
-    """
-    Returns a list of locations objects associated with an
-    archival object.
+    """Finds locations associated with an archival object.
+
+    Args:
+        archival_object (dict): an ArchivesSpace archival_object.
+
+    Returns:
+        list: Locations objects associated with the archival object.
     """
     locations = []
     for instance in archival_object.instances:
@@ -61,7 +97,14 @@ def get_locations(archival_object):
 @check_dictionary
 @validate_string
 def format_location(location):
-    """Return a human-readable string for a location."""
+    """Generates a human-readable string describing a location.
+
+    Args:
+        location (dict): an ArchivesSpace location object.
+
+    Returns:
+        str: a string representing the location
+    """
     pass
 # QUESTION: pass a format string
 # QUESTION: is this a more generalizable function?
@@ -73,9 +116,13 @@ def format_location(location):
 @check_dictionary
 @validate_string
 def format_container(top_container):
-    """
-    Returns a human-readable concatenation of top container type
-    and indicator.
+    """Generates a human-readable string describing a container.
+
+    Args:
+        top_container (dict): an ArchivesSpace top_container object.
+
+    Returns:
+        str: a concatenation of top container type and indicator.
     """
     return "{0} {1}".format(top_container.container_type,
                             top_container.indicator)
@@ -85,9 +132,15 @@ def format_container(top_container):
 @check_str
 @validate_string
 def format_resource_id(resource, separator=":"):
-    """
-    Returns the four-part ID for a resource record. Accepts an optional
-    separator argument, which is set to ":" by default
+    """Concatenates the four-part ID for a resource record.
+
+    Args:
+        resource (dict): an ArchivesSpace resource object.
+        separator (str): a separator to insert between the id parts. Defaults
+            to `:`.
+
+    Returns:
+        str: a concatenated four-part ID for the resource record.
     """
     resource_id = []
     for x in range(3):
@@ -100,9 +153,17 @@ def format_resource_id(resource, separator=":"):
 
 @check_dictionary
 def closest_value(archival_object, key):
-    """
-    Returns the closest matching for a key, iterating up through an object's
-    ancestors until it finds a match.
+    """Finds the closest value matching a key.
+
+    Starts with an archival object, and iterates up through it's ancestors
+    until it finds a match for a key that is not empty or null.
+
+    Args:
+        archival_object (dict): an ArchivesSpace archival_object
+        key (str): the key to match against.
+
+    Returns:
+        The value of the key, which could be a str, list, or dict
     """
     if getattr(archival_object, key) not in ['', [], {}, None]:
         return archival_object.key
@@ -114,9 +175,14 @@ def closest_value(archival_object, key):
 @check_list
 @validate_dictionary
 def get_orphans(object_list, null_attribute):
-    """
-    Generator function which returns objects that do not have a value in a
-    specified field.
+    """Finds objects in a list which do not have a value in a specified field.
+
+    Args:
+        object_list (list): a list of ArchivesSpace objects.
+        null_attribute: an attribute which must be empty or null.
+
+    Yields:
+        dict: a list of ArchivesSpace objects.
     """
     for obj in object_list:
         if getattr(obj, null_attribute) in ['', [], {}, None]:
@@ -125,8 +191,17 @@ def get_orphans(object_list, null_attribute):
 
 @check_dictionary
 @validate_string
-def expression(date):
-    """Always returns a date expression for a date object."""
+def get_expression(date):
+    """Returns a date expression for a date object.
+
+    Concatenates start and end dates if no date expression exists.
+
+    Args:
+        date (dict): an ArchivesSpace date object.
+
+    Returns:
+        str: a date expression for the date object.
+    """
     if date.expression:
         return date.expression
     if date.date_end:
@@ -138,7 +213,14 @@ def expression(date):
 @check_dictionary
 @validate_list
 def associated_objects(top_container):
-    """Return all the archival objects associated with a top container."""
+    """Returns all archival objects associated with a top container.
+
+    Args:
+        top_container (dict): an ArchivesSpace top_container object.
+
+    Returns:
+        list: a list of associated archival objects.
+    """
     pass
 # probably have to do some SOLR stuff
 
@@ -146,8 +228,14 @@ def associated_objects(top_container):
 @check_dictionary
 @validate_boolean
 def indicates_restriction(rights_statement):
-    """Returns a boolean indicating whether or not a rights statement
-    indicates a current restriction."""
+    """Parses a rights statement to determine if it indicates a restriction.
+
+    Args:
+        rights_statement (dict): an ArchivesSpace rights statement.
+
+    Returns:
+        bool: True if rights statement indicates a restriction, False if not.
+    """
     # If rights_statement.date_end is before today:
     # return False
     # for rights_granted in rights_statement.rights_granted:
@@ -160,13 +248,18 @@ def indicates_restriction(rights_statement):
 @check_dictionary
 @validate_boolean
 def is_restricted(archival_object):
-    """
-    Return a boolean which indicates if an object is restricted.
+    """Parses an archival object to determine if it is restricted.
 
     Iterates through notes, looking for a conditions governing access note
     which contains a particular set of strings.
     Also looks for associated rights statements which indicate object may be
     restricted.
+
+    Args:
+        archival_object (dict): an ArchivesSpace archival_object.
+
+    Returns:
+        bool: True if archival object is restricted, False if not.
     """
     query_string = "materials are restricted"
     for note in archival_object.notes:
@@ -177,23 +270,3 @@ def is_restricted(archival_object):
         if indicates_restriction(rights_statement):
             return True
     return False
-
-
-def get_user_input(prompt):
-    """
-    Allows users to input data.
-
-    This could be used like:
-    ```
-    variable = get_user_input("Please enter your name here:")
-    ```
-    """
-    print(prompt)
-    return raw_input()
-
-
-def get_config():
-    """Sets up configuration values necessary for ASpace."""
-    pass
-    # look for file
-    # look for env variables
