@@ -50,7 +50,6 @@ class TestDataHelpers(unittest.TestCase):
         """
 
         """
-        resource_id = []
         separator = ":"
         resource = {'id_0': 'FA', 'id_1': '01', 'id_2': '02', 'id_3': '03'}
         result = format_resource_id(resource, separator)
