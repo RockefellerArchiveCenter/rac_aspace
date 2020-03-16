@@ -26,7 +26,7 @@ class Serializer:
         self.filename = filename
 
     def write_data(self, data):
-        """Writes data to a Serializer class.
+        """Writes data to a file.
 
         Args:
             data (dict or list): a sequence of dicts.
