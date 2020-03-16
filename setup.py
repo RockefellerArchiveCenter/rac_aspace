@@ -1,4 +1,4 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 
 with open("README.md", "r") as fh:
     long_description = fh.read()
@@ -12,7 +12,7 @@ setup(name='rac-aspace',
       author='Rockefeller Archive Center',
       author_email='archive@rockarch.org',
       license='MIT',
-      packages=setuptools.find_packages(),
+      packages=find_packages(),
       install_requires=[],
       tests_require=[],
       python_requires='>=3.4',
