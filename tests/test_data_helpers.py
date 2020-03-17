@@ -39,7 +39,7 @@ class TestDataHelpers(unittest.TestCase):
             top_container: a dictionary with key value pairs
 
         Returns:
-            bool: Boolean. True if the top_container string matches expected output. False otherwise.
+            bool: Boolean. True if the top_container string matches expected output and type.
         """
         top_container = {'container_type': 'box', 'indicator': '1'}
         result = format_container(top_container)
@@ -48,7 +48,15 @@ class TestDataHelpers(unittest.TestCase):
 
     def test_format_resource_id(self):
         """
+        Checks whether the function returns a concatenated string as expected.
 
+        Args:
+            resource: a dictionary of an ArchivesSpace object.
+
+            separator: a string separator that will be added in between each section.
+
+        Returns:
+            bool: Boolean. True if the top_container string matches expected output and type.
         """
         separator = ":"
         resource = {'id_0': 'FA', 'id_1': '01', 'id_2': '02', 'id_3': '03'}
