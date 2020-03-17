@@ -64,7 +64,6 @@ class TestDataHelpers(unittest.TestCase):
         self.assertIsInstance(result, str)
         self.assertEqual(result, 'FA:01:02:03')
 
-
     def test_text_in_note(self):
         """
         Checks whether the query string and note content are close to a match.
@@ -82,11 +81,10 @@ class TestDataHelpers(unittest.TestCase):
         note = {"jsonmodel_type": "note_singlepart",
                 "type": "langmaterial",
                 "content": ["New York Mets"],
-                "publish": true }
+                "publish": true}
         query_string = "new York Mets"
         result = text_in_note(note, query_string)
         self.assertTrue(result >= 97)
-
 
     def test_get_expression(self):
         """
@@ -99,23 +97,22 @@ class TestDataHelpers(unittest.TestCase):
             bool: Returns true if the function creates the expected string output.
         """
         date1 = {"expression": "1905 - 1980",
-                "date_start": "1905",
-                "date_end": "1980",
-                "date_type": "inclusive",
-                "label": "creation",
-                "jsonmodel_type": "date"
-                }
+                 "date_start": "1905",
+                 "date_end": "1980",
+                 "date_type": "inclusive",
+                 "label": "creation",
+                 "jsonmodel_type": "date"
+                 }
         date2 = {"date_start": "1905",
-                "date_end": "1980",
-                "date_type": "inclusive",
-                "label": "creation",
-                "jsonmodel_type": "date"
-                }
+                 "date_end": "1980",
+                 "date_type": "inclusive",
+                 "label": "creation",
+                 "jsonmodel_type": "date"
+                 }
         dates = [date1, date2]
         for date in dates:
             result = get_expression(date)
             self.assertTrue(date, "1905 - 1980")
-
 
     def test_is_restricted(self):
         """
@@ -129,42 +126,43 @@ class TestDataHelpers(unittest.TestCase):
         """
         query_string = "materials are restricted"
         archival_object = {"rights_statements": [
-                                {
-                                "start_date": "2020-02-01",
-                                "end_date": "2090-05-06",
-                                "rights_type": "copyright",
-                                "status": "copyrighted",
-                                "jurisdiction": "US",
-                                "jsonmodel_type": "rights_statement",
-                                "acts": [
-                                    {
-                                    "act_type": "use",
-                                    "restriction": "disallow",
-                                    "jsonmodel_type": "rights_statement_act",
-                                    }
-                                ],
-                                }
-                            ],
-                            "notes": [
-                                {
-                                "jsonmodel_type": "note_multipart",
-                                "type": "accessrestrict",
-                                "rights_restriction": {
-                                "local_access_restriction_type": []
-                                },
-                                "subnotes": [
-                                    {
-                                    "jsonmodel_type": "note_text",
-                                    "content": "materials are restricted",
-                                    "publish": true
-                                    }
-                                ],
-                                "publish": true
-                                }
-                            ],
-                        }
+            {
+                "start_date": "2020-02-01",
+                "end_date": "2090-05-06",
+                "rights_type": "copyright",
+                "status": "copyrighted",
+                "jurisdiction": "US",
+                "jsonmodel_type": "rights_statement",
+                "acts": [
+                    {
+                        "act_type": "use",
+                        "restriction": "disallow",
+                        "jsonmodel_type": "rights_statement_act",
+                    }
+                ],
+            }
+        ],
+            "notes": [
+            {
+                "jsonmodel_type": "note_multipart",
+                "type": "accessrestrict",
+                "rights_restriction": {
+                    "local_access_restriction_type": []
+                },
+                "subnotes": [
+                    {
+                        "jsonmodel_type": "note_text",
+                        "content": "materials are restricted",
+                        "publish": true
+                    }
+                ],
+                "publish": true
+            }
+        ],
+        }
         result = is_restricted(archival_object)
         self.assertEqual(result, True)
+
 
 if __name__ == '__main__':
     unittest.main()
