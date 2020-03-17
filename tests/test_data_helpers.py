@@ -2,10 +2,10 @@
 Unit tests for Data Helpers
 """
 import unittest
-import os
 
 from rac_aspace.data_helpers import (get_locations, format_container,
-                                     format_resource_id)
+                                     format_resource_id, text_in_note,
+                                     get_expression, is_restricted)
 
 
 class TestDataHelpers(unittest.TestCase):
@@ -80,11 +80,10 @@ class TestDataHelpers(unittest.TestCase):
         """int: Minimum confidence ratio to match against."""
         note = {"jsonmodel_type": "note_singlepart",
                 "type": "langmaterial",
-                "content": ["New York Mets"],
-                "publish": true}
+                "content": ["New York Mets"]}
         query_string = "new York Mets"
         result = text_in_note(note, query_string)
-        self.assertTrue(result >= 97)
+        self.assertTrue(result >= CONFIDENCE_RATIO)
 
     def test_get_expression(self):
         """
@@ -112,7 +111,7 @@ class TestDataHelpers(unittest.TestCase):
         dates = [date1, date2]
         for date in dates:
             result = get_expression(date)
-            self.assertTrue(date, "1905 - 1980")
+            self.assertTrue(result, "1905 - 1980")
 
     def test_is_restricted(self):
         """
@@ -124,7 +123,6 @@ class TestDataHelpers(unittest.TestCase):
         Returns:
             bool: Returns true when finding a restriction in a note or rights statement.
         """
-        query_string = "materials are restricted"
         archival_object = {"rights_statements": [
             {
                 "start_date": "2020-02-01",
@@ -152,11 +150,9 @@ class TestDataHelpers(unittest.TestCase):
                 "subnotes": [
                     {
                         "jsonmodel_type": "note_text",
-                        "content": "materials are restricted",
-                        "publish": true
+                        "content": "materials are restricted"
                     }
                 ],
-                "publish": true
             }
         ],
         }
