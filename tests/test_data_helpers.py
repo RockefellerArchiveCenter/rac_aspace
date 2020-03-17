@@ -116,5 +116,55 @@ class TestDataHelpers(unittest.TestCase):
             result = get_expression(date)
             self.assertTrue(date, "1905 - 1980")
 
+
+    def test_is_restricted(self):
+        """
+        Tests whether the function can find restrictions in an AS archival object.
+
+        Args:
+            archival_object (dict): and ArchivesSpace archival object
+
+        Returns:
+            bool: Returns true when finding a restriction in a note or rights statement.
+        """
+        query_string = "materials are restricted"
+        archival_object = {"rights_statements": [
+                                {
+                                "start_date": "2020-02-01",
+                                "end_date": "2090-05-06",
+                                "rights_type": "copyright",
+                                "status": "copyrighted",
+                                "jurisdiction": "US",
+                                "jsonmodel_type": "rights_statement",
+                                "acts": [
+                                    {
+                                    "act_type": "use",
+                                    "restriction": "disallow",
+                                    "jsonmodel_type": "rights_statement_act",
+                                    }
+                                ],
+                                }
+                            ],
+                            "notes": [
+                                {
+                                "jsonmodel_type": "note_multipart",
+                                "type": "accessrestrict",
+                                "rights_restriction": {
+                                "local_access_restriction_type": []
+                                },
+                                "subnotes": [
+                                    {
+                                    "jsonmodel_type": "note_text",
+                                    "content": "materials are restricted",
+                                    "publish": true
+                                    }
+                                ],
+                                "publish": true
+                                }
+                            ],
+                        }
+        result = is_restricted(archival_object)
+        self.assertEqual(result, True)
+
 if __name__ == '__main__':
     unittest.main()
