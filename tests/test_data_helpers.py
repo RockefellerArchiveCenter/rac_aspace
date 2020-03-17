@@ -20,7 +20,7 @@ class TestDataHelpers(unittest.TestCase):
         Need to write a way to get the archival_object information from AS.
 
         Args:
-            archival_object: a dictionary with key value pairs
+            archival_object (dict): an ArchivesSpace archival object
 
         Returns:
             bool: Boolean. True if locations exists and is not empty. False if empty or doesn't exist
@@ -36,7 +36,7 @@ class TestDataHelpers(unittest.TestCase):
         Checks whether the function returns a string as expected.
 
         Args:
-            top_container: a dictionary with key value pairs
+            top_container (dict): an archivespace top container
 
         Returns:
             bool: Boolean. True if the top_container string matches expected output and type.
@@ -51,9 +51,9 @@ class TestDataHelpers(unittest.TestCase):
         Checks whether the function returns a concatenated string as expected.
 
         Args:
-            resource: a dictionary of an ArchivesSpace object.
+            resource (dict): an ArchivesSpace object.
 
-            separator: a string separator that will be added in between each section.
+            separator (str): a string separator that will be added in between each section.
 
         Returns:
             bool: Boolean. True if the top_container string matches expected output and type.
@@ -63,6 +63,30 @@ class TestDataHelpers(unittest.TestCase):
         result = format_resource_id(resource, separator)
         self.assertIsInstance(result, str)
         self.assertEqual(result, 'FA:01:02:03')
+
+
+    def test_text_in_note(self):
+        """
+        Checks whether the query string and note content are close to a match.
+
+        Args:
+            note (dict): an ArchivesSpace note object
+
+            query_string (str): a string object used to check against note content
+
+        Returns:
+            bool: True if the sort ratio is greater than or equal to 97.
+        """
+        CONFIDENCE_RATIO = 97
+        """int: Minimum confidence ratio to match against."""
+        note = {"jsonmodel_type": "note_singlepart",
+                "type": "langmaterial",
+                "content": ["New York Mets"],
+                "publish": true }
+        query_string = "new York Mets"
+        note_content = get_note_text(note)
+        ratio = fuzz.token_sort_ratio(note_content.lower(), query_string.lower())
+        self.assertTrue(ratio >= 97)
 
 
 if __name__ == '__main__':
