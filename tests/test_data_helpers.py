@@ -84,9 +84,8 @@ class TestDataHelpers(unittest.TestCase):
                 "content": ["New York Mets"],
                 "publish": true }
         query_string = "new York Mets"
-        note_content = get_note_text(note)
-        ratio = fuzz.token_sort_ratio(note_content.lower(), query_string.lower())
-        self.assertTrue(ratio >= 97)
+        result = text_in_note(note, query_string)
+        self.assertTrue(result >= 97)
 
 
 if __name__ == '__main__':
