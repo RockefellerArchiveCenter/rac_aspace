@@ -111,10 +111,10 @@ class TestDataHelpers(unittest.TestCase):
                 "label": "creation",
                 "jsonmodel_type": "date"
                 }
-        result1 = get_expression(date1)
-        result2 = get_expression(date2)
-        self.assertEqual(result1, "1905 - 1980")
-        self.assertEqual(result2, "1905 - 1980")
+        dates = [date1, date2]
+        for date in dates:
+            result = get_expression(date)
+            self.assertTrue(date, "1905 - 1980")
 
 if __name__ == '__main__':
     unittest.main()
