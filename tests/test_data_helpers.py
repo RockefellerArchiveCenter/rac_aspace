@@ -88,5 +88,33 @@ class TestDataHelpers(unittest.TestCase):
         self.assertTrue(result >= 97)
 
 
+    def test_get_expression(self):
+        """
+        Tests whether the date expression function works as intended.
+
+        Args:
+            date (dict): an ArchivesSpace date object
+
+        Returns:
+            bool: Returns true if the function creates the expected string output.
+        """
+        date1 = {"expression": "1905 - 1980",
+                "date_start": "1905",
+                "date_end": "1980",
+                "date_type": "inclusive",
+                "label": "creation",
+                "jsonmodel_type": "date"
+                }
+        date2 = {"date_start": "1905",
+                "date_end": "1980",
+                "date_type": "inclusive",
+                "label": "creation",
+                "jsonmodel_type": "date"
+                }
+        result1 = get_expression(date1)
+        result2 = get_expression(date2)
+        self.assertEqual(result1, "1905 - 1980")
+        self.assertEqual(result2, "1905 - 1980")
+
 if __name__ == '__main__':
     unittest.main()
