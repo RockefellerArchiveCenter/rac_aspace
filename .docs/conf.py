@@ -19,7 +19,7 @@ sys.path.insert(0, os.path.abspath('..'))
 
 project = 'rac_aspace'
 copyright = '2020, Rockefeller Archive Center'
-author = 'Hillel Arnold, Amy Berish, Patrick Galligan, Bonnie Gordon, Katie Martin, Hannah Sistrunk, Darren Young'
+author = 'Rockefeller Archive Center staff'
 
 # The full version, including alpha/beta/rc tags
 release = '1.0'
