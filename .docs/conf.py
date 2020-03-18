@@ -18,7 +18,7 @@ sys.path.insert(0, os.path.abspath('..'))
 # -- Project information -----------------------------------------------------
 
 project = 'rac_aspace'
-copyright = '2020, Hillel Arnold, Amy Berish, Patrick Galligan, Bonnie Gordon, Katie Martin, Hannah Sistrunk, Darren Young'
+copyright = '2020, Rockefeller Archive Center'
 author = 'Hillel Arnold, Amy Berish, Patrick Galligan, Bonnie Gordon, Katie Martin, Hannah Sistrunk, Darren Young'
 
 # The full version, including alpha/beta/rc tags
