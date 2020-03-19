@@ -8,9 +8,7 @@ objects.
 """
 
 from fuzzywuzzy import fuzz
-from decorators import (check_dictionary, check_str, check_list,
-                        validate_list, validate_dictionary,
-                        validate_string, validate_boolean)
+from decorators import (check_dictionary, check_str, check_list
 
 
 @check_dictionary
