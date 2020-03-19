@@ -126,7 +126,7 @@ def format_resource_id(resource, separator=":"):
         str: a concatenated four-part ID for the resource record.
     """
     resource_id = []
-    for x in range(3):
+    for x in range(4):
         try:
             resource_id.append(getattr(resource, "id_{0}".format(x)))
         except AttributeError:
