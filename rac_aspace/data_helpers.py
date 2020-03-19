@@ -110,7 +110,7 @@ def format_container(top_container):
     Returns:
         str: a concatenation of top container type and indicator.
     """
-    return "{0} {1}".format(top_container.container_type,
+    return "{0} {1}".format(top_container.type,
                             top_container.indicator)
 
 
@@ -182,10 +182,10 @@ def get_expression(date):
     """
     if date.expression:
         return date.expression
-    if date.date_end:
-        return "{0} - {1}".format(date.date_start, date.date_end)
+    if date.end:
+        return "{0}-{1}".format(date.begin, date.end)
     else:
-        return date.date_start
+        return date.begin
 
 
 def associated_objects(top_container):
