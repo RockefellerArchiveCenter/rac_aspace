@@ -14,7 +14,6 @@ from decorators import (check_dictionary, check_str, check_list,
 
 
 @check_dictionary
-@validate_list
 def get_note_text(note):
     """Parses note content from different note types.
 
@@ -58,7 +57,6 @@ def get_note_text(note):
 
 @check_dictionary
 @check_str
-@validate_boolean
 def text_in_note(note, query_string):
     """Performs fuzzy searching against note text.
 
@@ -78,7 +76,6 @@ def text_in_note(note, query_string):
 
 
 @check_dictionary
-@validate_list
 def get_locations(archival_object):
     """Finds locations associated with an archival object.
 
@@ -95,7 +92,6 @@ def get_locations(archival_object):
 
 
 @check_dictionary
-@validate_string
 def format_location(location):
     """Generates a human-readable string describing a location.
 
@@ -114,7 +110,6 @@ def format_location(location):
 
 
 @check_dictionary
-@validate_string
 def format_container(top_container):
     """Generates a human-readable string describing a container.
 
@@ -130,7 +125,6 @@ def format_container(top_container):
 
 @check_dictionary
 @check_str
-@validate_string
 def format_resource_id(resource, separator=":"):
     """Concatenates the four-part ID for a resource record.
 
@@ -173,7 +167,6 @@ def closest_value(archival_object, key):
 
 
 @check_list
-@validate_dictionary
 def get_orphans(object_list, null_attribute):
     """Finds objects in a list which do not have a value in a specified field.
 
@@ -190,7 +183,6 @@ def get_orphans(object_list, null_attribute):
 
 
 @check_dictionary
-@validate_string
 def get_expression(date):
     """Returns a date expression for a date object.
 
@@ -211,7 +203,6 @@ def get_expression(date):
 
 
 @check_dictionary
-@validate_list
 def associated_objects(top_container):
     """Returns all archival objects associated with a top container.
 
@@ -226,7 +217,6 @@ def associated_objects(top_container):
 
 
 @check_dictionary
-@validate_boolean
 def indicates_restriction(rights_statement):
     """Parses a rights statement to determine if it indicates a restriction.
 
@@ -246,7 +236,6 @@ def indicates_restriction(rights_statement):
 
 
 @check_dictionary
-@validate_boolean
 def is_restricted(archival_object):
     """Parses an archival object to determine if it is restricted.
 
