@@ -48,27 +48,31 @@ class TestDataHelpers(unittest.TestCase):
             result = text_in_note(note, query_string)
             self.assertTrue(result >= CONFIDENCE_RATIO)
 
-    def test_get_locations(self):
+    # def test_get_locations(self):
         """
-        Checks whether the function returns a list and if it is empty.
-        Need to write a way to get the archival_object information from AS.
-
-        Args:
-            archival_object (dict): an ArchivesSpace archival object
-
-        Returns:
-            bool: Boolean. True if locations exists and is not empty.
-            bool: Boolean. True if locations is a list. False if any other data type.
+        Data helper as written won't work without AS calls. Container and Location
+        information are in different objects, not just Archival Objects.
         """
-        with open(os.path.join("fixtures", "archival_object.json"), "r") as json_file:
-            data = json.load(json_file)
-            archival_object = wrap_json_object(data)
-            locations = get_locations(archival_object)
-            self.assertNotEqual(
-                locations, False,
-                "Get locatins returned an error: {}".format(locations)
-            )
-            self.assertIsInstance(locations, list)
+        # """
+        # Checks whether the function returns a list and if it is empty.
+        # Need to write a way to get the archival_object information from AS.
+
+        # Args:
+        # archival_object (dict): an ArchivesSpace archival object
+
+        # Returns:
+        # bool: Boolean. True if locations exists and is not empty.
+        # bool: Boolean. True if locations is a list. False if any other data type.
+        # """
+        # with open(os.path.join("fixtures", "archival_object.json"), "r") as json_file:
+        # data = json.load(json_file)
+        # archival_object = wrap_json_object(data)
+        # locations = get_locations(archival_object)
+        # self.assertNotEqual(
+        # locations, False,
+        # "Get locatins returned an error: {}".format(locations)
+        # )
+        # self.assertIsInstance(locations, list)
 
     def test_format_location(self):
         pass
