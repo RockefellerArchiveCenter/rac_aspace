@@ -180,12 +180,13 @@ def get_expression(date):
     Returns:
         str: a date expression for the date object.
     """
-    if date.expression:
+    try:
         return date.expression
-    if date.end:
-        return "{0}-{1}".format(date.begin, date.end)
-    else:
-        return date.begin
+    except KeyError:
+        if date.end:
+            return "{0}-{1}".format(date.begin, date.end)
+        else:
+            return date.begin
 
 
 def associated_objects(top_container):
