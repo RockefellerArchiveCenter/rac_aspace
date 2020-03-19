@@ -8,7 +8,8 @@ import unittest
 from archivessnake import wrap_json_object
 from rac_aspace.data_helpers import (get_locations, format_container,
                                      format_resource_id, text_in_note,
-                                     get_expression, is_restricted)
+                                     get_expression, get_note_text,
+                                     is_restricted)
 
 
 class TestDataHelpers(unittest.TestCase):
@@ -83,7 +84,7 @@ class TestDataHelpers(unittest.TestCase):
             bool: Boolean. True if the top_container string matches expected output and type.
         """
         with open(os.path.join("fixtures", "top_container.json"), "r") as json_file:
-            data  = json.load(json_file)
+            data = json.load(json_file)
             top_container = wrap_json_object(data)
             result = format_container(top_container)
             self.assertEqual(result, 'box 1')
@@ -103,7 +104,7 @@ class TestDataHelpers(unittest.TestCase):
         """
         separator = ":"
         with open(os.path.join("fixtures", "archival_object.json"), "r") as json_file:
-            data  = json.load(json_file)
+            data = json.load(json_file)
             resource = wrap_json_object(data)
             result = format_resource_id(resource, separator)
             self.assertIsInstance(result, str)
