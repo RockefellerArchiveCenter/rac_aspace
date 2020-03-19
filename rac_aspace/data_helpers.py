@@ -43,9 +43,9 @@ def get_note_text(note):
         return content
 
     if note.jsonmodel_type == "note_singlepart":
-        content = note.source.content.strip("]['").split(', ')
+        content = note.content.strip("]['").split(', ')
     elif note.jsonmodel_type == "note_index":
-        content = note.source.items.strip("]['").split(', ')
+        content = note.items.strip("]['").split(', ')
     else:
         content = (parse_subnote(sn) for sn in note.subnotes)
     return content

@@ -6,7 +6,7 @@ import os
 import unittest
 
 from asnake.jsonmodel import wrap_json_object
-from rac_aspace.data_helpers import (get_locations, format_container,
+from rac_aspace.data_helpers import (format_container,
                                      format_resource_id, text_in_note,
                                      get_expression, get_note_text,
                                      is_restricted)
