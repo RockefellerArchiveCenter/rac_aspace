@@ -34,7 +34,8 @@ class TestSerializers(unittest.TestCase):
                     reader = csv.reader(
                         out_file, delimiter=serializer.delimiter)
                     out_data = [r for r in reader]
-                    self.assertEqual(out_data[0], ["column1", "column2"])
+                    self.assertEqual(set(out_data[0]), set(
+                        ["column1", "column2"]))
                     self.assertEqual(len(out_data), len(data) + 1)
                 remove(expected_filepath)
 
