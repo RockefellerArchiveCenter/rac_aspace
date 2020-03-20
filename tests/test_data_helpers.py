@@ -27,7 +27,7 @@ class TestDataHelpers(unittest.TestCase):
         with open(os.path.join("fixtures", "note_multi.json"), "r") as json_file:
             data = json.load(json_file)
             note = wrap_json_object(data)
-            result = get_note_text(note)
+            result = data_helpers.get_note_text(note)
             self.assertTrue(result, list)
             self.assertEqual(result, ["materials are restricted"])
 
@@ -47,7 +47,7 @@ class TestDataHelpers(unittest.TestCase):
         with open(os.path.join("fixtures", "note_single.json"), "r") as json_file:
             data = json.load(json_file)
             note = wrap_json_object(data)
-            result = text_in_note(note, query_string)
+            result = data_helpers.text_in_note(note, query_string)
             self.assertTrue(result)
 
     # def test_get_locations(self):
@@ -92,7 +92,7 @@ class TestDataHelpers(unittest.TestCase):
         with open(os.path.join("fixtures", "top_container.json"), "r") as json_file:
             data = json.load(json_file)
             top_container = wrap_json_object(data)
-            result = format_container(top_container)
+            result = data_helpers.format_container(top_container)
             self.assertEqual(result, 'box 1')
             self.assertIsInstance(result, str)
 
@@ -112,7 +112,7 @@ class TestDataHelpers(unittest.TestCase):
         with open(os.path.join("fixtures", "archival_object.json"), "r") as json_file:
             data = json.load(json_file)
             resource = wrap_json_object(data)
-            result = format_resource_id(resource, separator)
+            result = data_helpers.format_resource_id(resource, separator)
             self.assertIsInstance(result, str)
             self.assertEqual(result, '1:2:3:4')
 
@@ -137,7 +137,7 @@ class TestDataHelpers(unittest.TestCase):
             with open(os.path.join("fixtures", f), "r") as json_file:
                 data = json.load(json_file)
                 date = wrap_json_object(data)
-                result = get_expression(date)
+                result = data_helpers.get_expression(date)
                 self.assertTrue(result, "1905-1980")
 
     def test_associated_objects(self):
@@ -159,12 +159,12 @@ class TestDataHelpers(unittest.TestCase):
         with open(os.path.join("fixtures", "archival_object.json"), "r") as json_file:
             data = json.load(json_file)
             archival_object = wrap_json_object(data)
-            result = is_restricted(archival_object)
+            result = data_helpers.is_restricted(archival_object)
             self.assertEqual(result, True)
             """
             Cannot currently test the restrictions portion because data helper is unwritten
             """
-            
+
     def test_strip_html_tags(self):
         input = "<h1>Title</h1><p>This is <i>some</i> text! It is wrapped in a variety of html tags, which should <strong>all</strong> be stripped &amp; not returned.</p>"
         expected = "TitleThis is some text! It is wrapped in a variety of html tags, which should all be stripped &amp; not returned."
