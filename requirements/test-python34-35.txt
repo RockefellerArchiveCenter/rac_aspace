@@ -1,0 +1,5 @@
+-r base.txt
+tox==3.14.0
+pytest
+pre-commit==1.18.3 # version compatible with Python 3.4 amd 3.5
+sphinx==1.8.5 # version compatible with Python 3.4

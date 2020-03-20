@@ -6,7 +6,7 @@ elements. They can also extend (or invert) relationships between different
 objects.
 
 """
-
+import re
 from fuzzywuzzy import fuzz
 
 
@@ -248,3 +248,14 @@ def is_restricted(archival_object):
         if indicates_restriction(rights_statement):
             return True
     return False
+
+
+def strip_html_tags(string):
+    """Strips HTML tags from a string.
+
+    Args:
+        string (str): An input string from which to remove HTML tags.
+    """
+    tag_match = re.compile('<.*?>')
+    cleantext = re.sub(tag_match, '', string)
+    return cleantext
