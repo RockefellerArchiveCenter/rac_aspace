@@ -39,14 +39,12 @@ class TestDataHelpers(unittest.TestCase):
         Returns:
             bool: True if the sort ratio is greater than or equal to 97.
         """
-        CONFIDENCE_RATIO = 97
         query_string = "New York Mets"
-        """int: Minimum confidence ratio to match against."""
         with open(os.path.join("fixtures", "note_single.json"), "r") as json_file:
             data = json.load(json_file)
             note = wrap_json_object(data)
             result = text_in_note(note, query_string)
-            self.assertTrue(result >= CONFIDENCE_RATIO)
+            self.assertTrue(result)
 
     # def test_get_locations(self):
         """

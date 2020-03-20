@@ -43,9 +43,9 @@ def get_note_text(note):
         return content
 
     if note.jsonmodel_type == "note_singlepart":
-        content = note.content.strip("]['").split(', ')
+        content = note.content
     elif note.jsonmodel_type == "note_index":
-        content = note.items.strip("]['").split(', ')
+        content = note.items
     else:
         content = (parse_subnote(sn) for sn in note.subnotes)
     return content
@@ -65,7 +65,8 @@ def text_in_note(note, query_string):
     CONFIDENCE_RATIO = 97
     """int: Minimum confidence ratio to match against."""
     note_content = get_note_text(note)
-    ratio = fuzz.token_sort_ratio(note_content.lower(), query_string.lower())
+    ratio = fuzz.token_sort_ratio(
+        " ".join([n.lower() for n in note_content]), query_string.lower())
     return (True if ratio > CONFIDENCE_RATIO else False)
 
 
