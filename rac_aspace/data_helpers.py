@@ -172,24 +172,26 @@ def get_orphans(object_list, null_attribute):
             yield obj
 
 
-def get_expression(archival_object):
+def get_expression(date):
     """Returns a date expression for a date object.
 
     Concatenates start and end dates if no date expression exists.
 
     Args:
-        archival_object (dict): an ArchivesSpace archival_object
+        date (obj): an ArchivesSpace date object
 
     Returns:
         str: a date expression for the date object.
     """
-    for date in archival_object.dates:
-        if date.expression:
-            return date.expression
-        if date.end:
-            return "{0}-{1}".format(date.begin, date.end)
+    date_json = date.json()
+    try:
+        expression = date_json["expression"]
+    except KeyError:
+        if date_json.get("end"):
+            expression = "{0}-{1}".format(date_json["begin"], date_json["end"])
         else:
-            return date.begin
+            expression = date_json["begin"]
+    return expression
 
 
 def associated_objects(top_container):
