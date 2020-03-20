@@ -19,6 +19,13 @@ class TestDataHelpers(unittest.TestCase):
 
     def test_get_note_text(self):
         """
+        Checks whether the returned note text matches the selected query string.
+
+        Args:
+            note (dict): an ArchivesSpace note object
+
+        Returns:
+            bool: True if the content matches the supplied text.
         """
         with open(os.path.join("fixtures", "note_multi.json"), "r") as json_file:
             data = json.load(json_file)
