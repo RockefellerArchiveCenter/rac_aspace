@@ -67,8 +67,6 @@ def text_in_note(note, query_string):
     CONFIDENCE_RATIO = 97
     """int: Minimum confidence ratio to match against."""
     note_content = get_note_text(note)
-    print(note)
-    print(note_content)
     ratio = fuzz.token_sort_ratio(
         " ".join([n.lower() for n in note_content]), query_string.lower())
     return (True if ratio > CONFIDENCE_RATIO else False)
