@@ -32,7 +32,7 @@ class TestDataHelpers(unittest.TestCase):
             note = wrap_json_object(data)
             result = get_note_text(note)
             self.assertTrue(result, list)
-            self.assertEqual(next(result), ["materials are restricted"])
+            self.assertEqual(result, ["materials are restricted"])
 
     def test_text_in_note(self):
         """
