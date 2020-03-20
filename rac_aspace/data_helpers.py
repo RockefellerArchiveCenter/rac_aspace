@@ -239,7 +239,7 @@ def is_restricted(archival_object):
         if note.jsonmodel_type == 'accessrestrict':
             if text_in_note(note, query_string):
                 return True
-    for rights_statement in archival_object.rights_statement:
+    for rights_statement in archival_object.rights_statements:
         if indicates_restriction(rights_statement):
             return True
     return False
