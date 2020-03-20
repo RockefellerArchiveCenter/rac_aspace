@@ -128,7 +128,7 @@ class TestDataHelpers(unittest.TestCase):
         Returns:
             bool: Returns true if the function creates the expected string output.
         """
-        files = ['date_expression.json', 'date_no_expression.json']
+        files = ['archival_object.json']
         for f in files:
             with open(os.path.join("fixtures", f), "r") as json_file:
                 data = json.load(json_file)

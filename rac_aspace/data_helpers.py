@@ -170,23 +170,24 @@ def get_orphans(object_list, null_attribute):
             yield obj
 
 
-def get_expression(date):
+def get_expression(archival_object):
     """Returns a date expression for a date object.
 
     Concatenates start and end dates if no date expression exists.
 
     Args:
-        date (dict): an ArchivesSpace date object.
+        archival_object (dict): an ArchivesSpace archival_object
 
     Returns:
         str: a date expression for the date object.
     """
-    if date.expression:
-        return date.expression
-    if date.end:
-        return "{0}-{1}".format(date.begin, date.end)
-    else:
-        return date.begin
+    for date in archival_object.dates:
+        if date.expression:
+            return date.expression
+        if date.end:
+            return "{0}-{1}".format(date.begin, date.end)
+        else:
+            return date.begin
 
 
 def associated_objects(top_container):
@@ -236,7 +237,7 @@ def is_restricted(archival_object):
     """
     query_string = "materials are restricted"
     for note in archival_object.notes:
-        if note.jsonmodel_type == 'accessrestrict':
+        if note.type == 'accessrestrict':
             if text_in_note(note, query_string):
                 return True
     for rights_statement in archival_object.rights_statements:
