@@ -43,11 +43,13 @@ def get_note_text(note):
         return content
 
     if note.jsonmodel_type == "note_singlepart":
-        content = note.source.content.strip("]['").split(', ')
+        content = note.content
     elif note.jsonmodel_type == "note_index":
-        content = note.source.items.strip("]['").split(', ')
+        content = note.items
     else:
-        content = (parse_subnote(sn) for sn in note.subnotes)
+        subnote_content_list = list(parse_subnote(sn) for sn in note.subnotes)
+        content = [
+            c for subnote_content in subnote_content_list for c in subnote_content]
     return content
 
 
@@ -65,7 +67,8 @@ def text_in_note(note, query_string):
     CONFIDENCE_RATIO = 97
     """int: Minimum confidence ratio to match against."""
     note_content = get_note_text(note)
-    ratio = fuzz.token_sort_ratio(note_content.lower(), query_string.lower())
+    ratio = fuzz.token_sort_ratio(
+        " ".join([n.lower() for n in note_content]), query_string.lower())
     return (True if ratio > CONFIDENCE_RATIO else False)
 
 
@@ -110,7 +113,7 @@ def format_container(top_container):
     Returns:
         str: a concatenation of top container type and indicator.
     """
-    return "{0} {1}".format(top_container.container_type,
+    return "{0} {1}".format(top_container.type,
                             top_container.indicator)
 
 
@@ -126,7 +129,7 @@ def format_resource_id(resource, separator=":"):
         str: a concatenated four-part ID for the resource record.
     """
     resource_id = []
-    for x in range(3):
+    for x in range(4):
         try:
             resource_id.append(getattr(resource, "id_{0}".format(x)))
         except AttributeError:
@@ -175,17 +178,20 @@ def get_expression(date):
     Concatenates start and end dates if no date expression exists.
 
     Args:
-        date (dict): an ArchivesSpace date object.
+        date (obj): an ArchivesSpace date object
 
     Returns:
         str: a date expression for the date object.
     """
-    if date.expression:
-        return date.expression
-    if date.date_end:
-        return "{0} - {1}".format(date.date_start, date.date_end)
-    else:
-        return date.date_start
+    date_json = date.json()
+    try:
+        expression = date_json["expression"]
+    except KeyError:
+        if date_json.get("end"):
+            expression = "{0}-{1}".format(date_json["begin"], date_json["end"])
+        else:
+            expression = date_json["begin"]
+    return expression
 
 
 def associated_objects(top_container):
@@ -235,10 +241,10 @@ def is_restricted(archival_object):
     """
     query_string = "materials are restricted"
     for note in archival_object.notes:
-        if note.jsonmodel_type == 'accessrestrict':
+        if note.type == 'accessrestrict':
             if text_in_note(note, query_string):
                 return True
-    for rights_statement in archival_object.rights_statement:
+    for rights_statement in archival_object.rights_statements:
         if indicates_restriction(rights_statement):
             return True
     return False
