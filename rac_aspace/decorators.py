@@ -12,7 +12,7 @@ def check_dictionary(func):
 
 def check_list(func):
     def inner(*args, **kwargs):
-        if not [isinstance(args[0], list):
+        if not isinstance(args[0], list):
             raise TypeError('{} is not a list'.format(args[0]))
         if len(args[0]) == 0:
             raise AttributeError('{} is empty'.format(args[0]))
