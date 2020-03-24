@@ -8,7 +8,7 @@ objects.
 """
 import re
 from fuzzywuzzy import fuzz
-#from rac_aspace.decorators import (check_dictionary, check_list, check_str)
+# from rac_aspace.decorators import (check_dictionary, check_list, check_str)
 
 
 def get_note_text(note):
