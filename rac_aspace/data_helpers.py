@@ -8,6 +8,7 @@ objects.
 """
 import re
 from fuzzywuzzy import fuzz
+from rac_aspace.decorators import check_str
 # from rac_aspace.decorators import (check_dictionary, check_list, check_str)
 
 
@@ -251,6 +252,7 @@ def is_restricted(archival_object):
     return False
 
 
+@check_str
 def strip_html_tags(string):
     """Strips HTML tags from a string.
 
