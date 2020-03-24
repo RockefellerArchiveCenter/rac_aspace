@@ -236,6 +236,7 @@ def indicates_restriction(rights_statement):
     # return True
     # return False
 
+
 @check_dictionary
 def is_restricted(archival_object):
     """Parses an archival object to determine if it is restricted.
