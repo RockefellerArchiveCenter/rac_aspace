@@ -6,6 +6,7 @@ elements. They can also extend (or invert) relationships between different
 objects.
 
 """
+import re
 from fuzzywuzzy import fuzz
 from decorators import (check_dictionary, check_list, check_str)
 
@@ -259,6 +260,7 @@ def is_restricted(archival_object):
         if indicates_restriction(rights_statement):
             return True
     return False
+
 
 @check_str
 def strip_html_tags(string):
