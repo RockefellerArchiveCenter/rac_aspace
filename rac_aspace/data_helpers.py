@@ -7,16 +7,18 @@ objects.
 
 """
 import re
+from asnake.jsonmodel import JSONModelObject
 from fuzzywuzzy import fuzz
-from rac_aspace.decorators import check_str
-# from rac_aspace.decorators import (check_dictionary, check_list, check_str)
+
+from .decorators import check_type
 
 
+@check_type(JSONModelObject)
 def get_note_text(note):
     """Parses note content from different note types.
 
     Args:
-        note (dict): an ArchivesSpace note object.
+        note (JSONModelObject): an ArchivesSpace note object.
 
     Returns:
         list: a list containing note content.
@@ -25,7 +27,7 @@ def get_note_text(note):
         """Parses note content from subnotes.
 
         Args:
-            subnote (dict): an ArchivesSpace subnote object.
+            subnote (JSONModelObject): an ArchivesSpace subnote object.
 
         Returns:
             list: a list containing subnote content.
@@ -55,11 +57,12 @@ def get_note_text(note):
     return content
 
 
+@check_type(JSONModelObject)
 def text_in_note(note, query_string):
     """Performs fuzzy searching against note text.
 
     Args:
-        note (dict): an ArchivesSpace note object.
+        note (JSONModelObject): an ArchivesSpace note object.
         query_string (str): a string to match against.
 
     Returns:
@@ -74,11 +77,12 @@ def text_in_note(note, query_string):
     return (True if ratio > CONFIDENCE_RATIO else False)
 
 
+@check_type(JSONModelObject)
 def get_locations(archival_object):
     """Finds locations associated with an archival object.
 
     Args:
-        archival_object (dict): an ArchivesSpace archival_object.
+        archival_object (JSONModelObject): an ArchivesSpace archival_object.
 
     Returns:
         list: Locations objects associated with the archival object.
@@ -93,7 +97,7 @@ def format_location(location):
     """Generates a human-readable string describing a location.
 
     Args:
-        location (dict): an ArchivesSpace location object.
+        location (JSONModelObject): an ArchivesSpace location object.
 
     Returns:
         str: a string representing the location
@@ -106,11 +110,12 @@ def format_location(location):
 # return format string
 
 
+@check_type(JSONModelObject)
 def format_container(top_container):
     """Generates a human-readable string describing a container.
 
     Args:
-        top_container (dict): an ArchivesSpace top_container object.
+        top_container (JSONModelObject): an ArchivesSpace top_container object.
 
     Returns:
         str: a concatenation of top container type and indicator.
@@ -119,11 +124,12 @@ def format_container(top_container):
                             top_container.indicator)
 
 
+@check_type(JSONModelObject)
 def format_resource_id(resource, separator=":"):
     """Concatenates the four-part ID for a resource record.
 
     Args:
-        resource (dict): an ArchivesSpace resource object.
+        resource (JSONModelObject): an ArchivesSpace resource object.
         separator (str): a separator to insert between the id parts. Defaults
             to `:`.
 
@@ -139,6 +145,7 @@ def format_resource_id(resource, separator=":"):
     return separator.join(resource_id)
 
 
+@check_type(JSONModelObject)
 def closest_value(archival_object, key):
     """Finds the closest value matching a key.
 
@@ -146,7 +153,7 @@ def closest_value(archival_object, key):
     until it finds a match for a key that is not empty or null.
 
     Args:
-        archival_object (dict): an ArchivesSpace archival_object
+        archival_object (JSONModelObject): an ArchivesSpace archival_object
         key (str): the key to match against.
 
     Returns:
@@ -159,6 +166,7 @@ def closest_value(archival_object, key):
             return closest_value(ancestor, key)
 
 
+@check_type(list)
 def get_orphans(object_list, null_attribute):
     """Finds objects in a list which do not have a value in a specified field.
 
@@ -174,13 +182,14 @@ def get_orphans(object_list, null_attribute):
             yield obj
 
 
+@check_type(JSONModelObject)
 def get_expression(date):
     """Returns a date expression for a date object.
 
     Concatenates start and end dates if no date expression exists.
 
     Args:
-        date (obj): an ArchivesSpace date object
+        date (JSONModelObject): an ArchivesSpace date object
 
     Returns:
         str: a date expression for the date object.
@@ -196,11 +205,12 @@ def get_expression(date):
     return expression
 
 
+@check_type(JSONModelObject)
 def associated_objects(top_container):
     """Returns all archival objects associated with a top container.
 
     Args:
-        top_container (dict): an ArchivesSpace top_container object.
+        top_container (JSONModelObject): an ArchivesSpace top_container object.
 
     Returns:
         list: a list of associated archival objects.
@@ -209,11 +219,12 @@ def associated_objects(top_container):
 # probably have to do some SOLR stuff
 
 
+@check_type(JSONModelObject)
 def indicates_restriction(rights_statement):
     """Parses a rights statement to determine if it indicates a restriction.
 
     Args:
-        rights_statement (dict): an ArchivesSpace rights statement.
+        rights_statement (JSONModelObject): an ArchivesSpace rights statement.
 
     Returns:
         bool: True if rights statement indicates a restriction, False if not.
@@ -227,6 +238,7 @@ def indicates_restriction(rights_statement):
     # return False
 
 
+@check_type(JSONModelObject)
 def is_restricted(archival_object):
     """Parses an archival object to determine if it is restricted.
 
@@ -236,7 +248,7 @@ def is_restricted(archival_object):
     restricted.
 
     Args:
-        archival_object (dict): an ArchivesSpace archival_object.
+        archival_object (JSONModelObject): an ArchivesSpace archival_object.
 
     Returns:
         bool: True if archival object is restricted, False if not.
@@ -252,7 +264,7 @@ def is_restricted(archival_object):
     return False
 
 
-@check_str
+@check_type(str)
 def strip_html_tags(string):
     """Strips HTML tags from a string.
 

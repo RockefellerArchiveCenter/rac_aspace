@@ -1,28 +1,8 @@
-
-
-def check_dictionary(func):
-    def inner(*args, **kwargs):
-        if not isinstance(args[0], dict):
-            raise TypeError('{} is not a dictionary'.format(args[0]))
-        if not args[0]:
-            raise AttributeError('{} is empty'.format(args[0]))
-        return func(*args, **kwargs)
-    return inner
-
-
-def check_list(func):
-    def inner(*args, **kwargs):
-        if not isinstance(args[0], list):
-            raise TypeError('{} is not a list'.format(args[0]))
-        if len(args[0]) == 0:
-            raise AttributeError('{} is empty'.format(args[0]))
-        return func(*args, **kwargs)
-    return inner
-
-
-def check_str(func):
-    def inner(*args, **kwargs):
-        if not isinstance(args[0], str):
-            raise TypeError('{} is not a string'.format(args[0]))
-        return func(*args, **kwargs)
-    return inner
+def check_type(obj_type):
+    def real_decorator(func):
+        def wrapper(*args, **kwargs):
+            if not isinstance(args[0], obj_type):
+                raise TypeError("{} is not a {}".format(args[0], obj_type))
+            return func(*args, **kwargs)
+        return wrapper
+    return real_decorator
