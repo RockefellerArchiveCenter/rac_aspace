@@ -54,7 +54,6 @@ def get_note_text(note):
 
 
 @check_dictionary
-@check_str
 def text_in_note(note, query_string):
     """Performs fuzzy searching against note text.
 
@@ -122,7 +121,6 @@ def format_container(top_container):
 
 
 @check_dictionary
-@check_str
 def format_resource_id(resource, separator=":"):
     """Concatenates the four-part ID for a resource record.
 
