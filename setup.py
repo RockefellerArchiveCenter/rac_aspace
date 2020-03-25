@@ -21,6 +21,6 @@ setup(name='rac-aspace',
                         "PyYAML>=5.2.0",
                         "sphinx>=1.8.5",
                         "tox>=3.14.0"],
-      tests_require=[],
+      tests_require=["pytest", "pre-commit", "tox", "sphinx"],
       python_requires='>=3.4',
       zip_safe=False)
