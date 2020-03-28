@@ -7,7 +7,7 @@ objects.
 
 """
 import re
-from fuzzywuzzy import fuzz
+from rapidfuzz import fuzz
 
 
 def get_note_text(note):
@@ -68,8 +68,10 @@ def text_in_note(note, query_string):
     """int: Minimum confidence ratio to match against."""
     note_content = get_note_text(note)
     ratio = fuzz.token_sort_ratio(
-        " ".join([n.lower() for n in note_content]), query_string.lower())
-    return (True if ratio > CONFIDENCE_RATIO else False)
+        " ".join([n.lower() for n in note_content]),
+        query_string.lower(),
+        score_cutoff=CONFIDENCE_RATIO)
+    return bool(ratio)
 
 
 def get_locations(archival_object):
