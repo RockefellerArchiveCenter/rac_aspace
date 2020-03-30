@@ -10,45 +10,26 @@ from rac_aspace import data_helpers
 
 
 class TestDataHelpers(unittest.TestCase):
-    """
-    Tests the data helper functions.
-    """
+    """Tests the data helper functions."""
+
+    def obj_from_fixture(self, filename):
+        with open(os.path.join("fixtures", filename)) as json_file:
+            data = json.load(json_file)
+            return wrap_json_object(data)
 
     def test_get_note_text(self):
-        """
-        Checks whether the returned note text matches the selected query string.
-
-        Args:
-            note (dict): an ArchivesSpace note object
-
-        Returns:
-            bool: True if the content matches the supplied text.
-        """
-        with open(os.path.join("fixtures", "note_multi.json"), "r") as json_file:
-            data = json.load(json_file)
-            note = wrap_json_object(data)
-            result = data_helpers.get_note_text(note)
-            self.assertTrue(result, list)
-            self.assertEqual(result, ["materials are restricted"])
+        """Checks whether the returned note text matches the selected query string."""
+        note = self.obj_from_fixture("note_multi.json")
+        result = data_helpers.get_note_text(note)
+        self.assertTrue(result, list)
+        self.assertEqual(result, ["materials are restricted"])
 
     def test_text_in_note(self):
-        """
-        Checks whether the query string and note content are close to a match.
-
-        Args:
-            note (dict): an ArchivesSpace note object
-
-            query_string (str): a string object used to check against note content
-
-        Returns:
-            bool: True if the sort ratio is greater than or equal to 97.
-        """
+        """Checks whether the query string and note content are close to a match."""
         query_string = "New York Mets"
-        with open(os.path.join("fixtures", "note_single.json"), "r") as json_file:
-            data = json.load(json_file)
-            note = wrap_json_object(data)
-            result = data_helpers.text_in_note(note, query_string)
-            self.assertTrue(result)
+        note = self.obj_from_fixture("note_single.json")
+        result = data_helpers.text_in_note(note, query_string)
+        self.assertTrue(result)
 
     # def test_get_locations(self):
         """
@@ -77,24 +58,12 @@ class TestDataHelpers(unittest.TestCase):
         # self.assertIsInstance(locations, list)
 
     def test_format_resource_id(self):
-        """
-        Checks whether the function returns a concatenated string as expected.
-
-        Args:
-            resource (dict): an ArchivesSpace object.
-
-            separator (str): a string separator that will be added in between each section.
-
-        Returns:
-            bool: Boolean. True if the top_container string matches expected output and type.
-        """
+        """Checks whether the function returns a concatenated string as expected."""
         separator = ":"
-        with open(os.path.join("fixtures", "archival_object.json"), "r") as json_file:
-            data = json.load(json_file)
-            resource = wrap_json_object(data)
-            result = data_helpers.format_resource_id(resource, separator)
-            self.assertIsInstance(result, str)
-            self.assertEqual(result, '1:2:3:4')
+        resource = self.obj_from_fixture("archival_object.json")
+        result = data_helpers.format_resource_id(resource, separator)
+        self.assertIsInstance(result, str)
+        self.assertEqual(result, '1:2:3:4')
 
     def test_closest_value(self):
         pass
@@ -103,49 +72,41 @@ class TestDataHelpers(unittest.TestCase):
         pass
 
     def test_get_expression(self):
-        """
-        Tests whether the date expression function works as intended.
-
-        Args:
-            date (dict): an ArchivesSpace date object
-
-        Returns:
-            bool: Returns true if the function creates the expected string output.
-        """
+        """Tests whether the date expression function works as intended."""
         files = ['date_expression.json', 'date_no_expression.json']
         for f in files:
-            with open(os.path.join("fixtures", f), "r") as json_file:
-                data = json.load(json_file)
-                date = wrap_json_object(data)
-                result = data_helpers.get_expression(date)
-                self.assertTrue(result, "1905-1980")
+            date = self.obj_from_fixture(f)
+            result = data_helpers.get_expression(date)
+            self.assertTrue(result, "1905-1980")
 
     def test_associated_objects(self):
         pass
 
     def test_indicates_restriction(self):
-        pass
+        """Tests whether rights statements are correctly parsed for restrictions."""
+        for fixture, outcome in [
+                ("rights_statement_restricted.json", True),
+                ("rights_statement_open.json", False),
+                ("rights_statement_conditional.json", True)]:
+            statement = self.obj_from_fixture(
+                "rights_statement_restricted.json")
+            status = data_helpers.indicates_restriction(statement)
+            self.assertTrue(
+                status, outcome,
+                "Restriction status expected {}, got {} instead".format(
+                    outcome, status))
 
     def test_is_restricted(self):
+        """Tests whether the function can find restrictions in an AS archival object."""
+        archival_object = self.obj_from_fixture("archival_object.json")
+        result = data_helpers.is_restricted(archival_object)
+        self.assertEqual(result, True)
         """
-        Tests whether the function can find restrictions in an AS archival object.
-
-        Args:
-            archival_object (dict): and ArchivesSpace archival object
-
-        Returns:
-            bool: Returns true when finding a restriction in a note or rights statement.
+        Cannot currently test the restrictions portion because data helper is unwritten
         """
-        with open(os.path.join("fixtures", "archival_object.json"), "r") as json_file:
-            data = json.load(json_file)
-            archival_object = wrap_json_object(data)
-            result = data_helpers.is_restricted(archival_object)
-            self.assertEqual(result, True)
-            """
-            Cannot currently test the restrictions portion because data helper is unwritten
-            """
 
     def test_strip_html_tags(self):
+        """Ensures HTML tags are correctly removed from strings."""
         input = "<h1>Title</h1><p>This is <i>some</i> text! It is wrapped in a variety of html tags, which should <strong>all</strong> be stripped &amp; not returned.</p>"
         expected = "TitleThis is some text! It is wrapped in a variety of html tags, which should all be stripped &amp; not returned."
         output = data_helpers.strip_html_tags(input)
@@ -154,16 +115,15 @@ class TestDataHelpers(unittest.TestCase):
             "Expected string {} but got {} instead.".format(expected, output))
 
     def test_format_from_obj(self):
-        with open(os.path.join("fixtures", "date_expression.json"), "r") as json_file:
-            data = json.load(json_file)
-            date = wrap_json_object(data)
+        """Test that format strings can be passed to objects as expected."""
+        date = self.obj_from_fixture("date_expression.json")
+        formatted = data_helpers.format_from_obj(
+            date, "{begin} - {end} ({expression})")
+        self.assertEqual(formatted, "1905 - 1980 (1905-1980)")
+        with self.assertRaises(KeyError) as excpt:
             formatted = data_helpers.format_from_obj(
-                date, "{begin} - {end} ({expression})")
-            self.assertEqual(formatted, "1905 - 1980 (1905-1980)")
-            with self.assertRaises(KeyError) as excpt:
-                formatted = data_helpers.format_from_obj(
-                    date, "{start} - {end} ({expression})")
-            self.assertIn("was not found in this object", str(excpt.exception))
+                date, "{start} - {end} ({expression})")
+        self.assertIn("was not found in this object", str(excpt.exception))
 
 
 if __name__ == '__main__':
