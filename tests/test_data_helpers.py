@@ -173,6 +173,18 @@ class TestDataHelpers(unittest.TestCase):
             expected, output,
             "Expected string {} but got {} instead.".format(expected, output))
 
+    def test_format_from_obj(self):
+        with open(os.path.join("fixtures", "date_expression.json"), "r") as json_file:
+            data = json.load(json_file)
+            date = wrap_json_object(data)
+            formatted = data_helpers.format_from_obj(
+                date, "{begin} - {end} ({expression})")
+            self.assertEqual(formatted, "1905 - 1980 (1905-1980)")
+            with self.assertRaises(KeyError) as excpt:
+                formatted = data_helpers.format_from_obj(
+                    date, "{start} - {end} ({expression})")
+            self.assertIn("was not found in this object", str(excpt.exception))
+
 
 if __name__ == '__main__':
     unittest.main()

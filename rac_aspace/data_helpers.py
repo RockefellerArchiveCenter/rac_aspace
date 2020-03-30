@@ -8,6 +8,7 @@ objects.
 """
 import re
 from fuzzywuzzy import fuzz
+from string import Formatter
 
 
 def get_note_text(note):
@@ -87,21 +88,29 @@ def get_locations(archival_object):
     return locations
 
 
-def format_location(location):
-    """Generates a human-readable string describing a location.
+def format_from_obj(obj, format_string):
+    """Generates a human-readable string from an object.
 
     Args:
-        location (dict): an ArchivesSpace location object.
+        location (dict): an ArchivesSpace object.
+        string_template (dict): an (optional) Python string template
 
     Returns:
-        str: a string representing the location
+        str: a string in the chosen format
     """
-    pass
-# QUESTION: pass a format string
-# QUESTION: is this a more generalizable function?
-# grab fields from location
-# format string "{} {}, {}-{}"
-# return format string
+    if not format_string:
+        raise Exception("No format string provided.")
+    else:
+        try:
+            d = {}
+            matches = [i[1] for i in Formatter().parse(format_string) if i[1]]
+            for m in matches:
+                d.update({m: getattr(obj, m, "")})
+            return format_string.format(**d)
+        except KeyError as e:
+            raise KeyError(
+                "The field {} was not found in this object".format(
+                    str(e)))
 
 
 def format_container(top_container):
