@@ -113,19 +113,6 @@ def format_from_obj(obj, format_string):
                     str(e)))
 
 
-def format_container(top_container):
-    """Generates a human-readable string describing a container.
-
-    Args:
-        top_container (dict): an ArchivesSpace top_container object.
-
-    Returns:
-        str: a concatenation of top container type and indicator.
-    """
-    return "{0} {1}".format(top_container.type,
-                            top_container.indicator)
-
-
 def format_resource_id(resource, separator=":"):
     """Concatenates the four-part ID for a resource record.
 

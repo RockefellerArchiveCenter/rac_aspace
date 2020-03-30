@@ -76,26 +76,6 @@ class TestDataHelpers(unittest.TestCase):
         # )
         # self.assertIsInstance(locations, list)
 
-    def test_format_location(self):
-        pass
-
-    def test_format_container(self):
-        """
-        Checks whether the function returns a string as expected.
-
-        Args:
-            top_container (dict): an archivespace top container
-
-        Returns:
-            bool: Boolean. True if the top_container string matches expected output and type.
-        """
-        with open(os.path.join("fixtures", "top_container.json"), "r") as json_file:
-            data = json.load(json_file)
-            top_container = wrap_json_object(data)
-            result = data_helpers.format_container(top_container)
-            self.assertEqual(result, 'box 1')
-            self.assertIsInstance(result, str)
-
     def test_format_resource_id(self):
         """
         Checks whether the function returns a concatenated string as expected.
