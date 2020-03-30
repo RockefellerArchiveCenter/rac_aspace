@@ -6,6 +6,7 @@ elements. They can also extend (or invert) relationships between different
 objects.
 
 """
+from datetime import datetime
 import re
 from fuzzywuzzy import fuzz
 from string import Formatter
@@ -212,13 +213,13 @@ def indicates_restriction(rights_statement):
     Returns:
         bool: True if rights statement indicates a restriction, False if not.
     """
-    # If rights_statement.date_end is before today:
-    # return False
-    # for rights_granted in rights_statement.rights_granted:
-    # if rights_granted.date_end is after today:
-    # if rights_granted.act in ["disallow", "conditional"]:
-    # return True
-    # return False
+    today = datetime.now()
+    for act in rights_statement.acts:
+        act_json = act.json()
+        if (act_json.get("restriction") in ["disallow", "conditional"] and datetime.fromisoformat(
+                act_json.get('end_date', datetime.isoformat(today))) >= today):
+            return True
+    return False
 
 
 def is_restricted(archival_object):

@@ -88,13 +88,12 @@ class TestDataHelpers(unittest.TestCase):
                 ("rights_statement_restricted.json", True),
                 ("rights_statement_open.json", False),
                 ("rights_statement_conditional.json", True)]:
-            statement = self.obj_from_fixture(
-                "rights_statement_restricted.json")
+            statement = self.obj_from_fixture(fixture)
             status = data_helpers.indicates_restriction(statement)
-            self.assertTrue(
+            self.assertEqual(
                 status, outcome,
-                "Restriction status expected {}, got {} instead".format(
-                    outcome, status))
+                "Restriction status for {} expected {}, got {} instead".format(
+                    fixture, outcome, status))
 
     def test_is_restricted(self):
         """Tests whether the function can find restrictions in an AS archival object."""
