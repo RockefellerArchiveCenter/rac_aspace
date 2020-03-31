@@ -149,7 +149,7 @@ def closest_value(archival_object, key):
         The value of the key, which could be a str, list, or dict
     """
     if getattr(archival_object, key) not in ['', [], {}, None]:
-        return archival_object.key
+        return getattr(archival_object, key)
     else:
         for ancestor in archival_object.ancestors:
             return closest_value(ancestor, key)

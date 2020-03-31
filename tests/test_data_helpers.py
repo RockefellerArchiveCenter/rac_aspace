@@ -64,7 +64,12 @@ class TestDataHelpers(unittest.TestCase):
         self.assertEqual(result, '1:2:3:4')
 
     def test_closest_value(self):
-        pass
+        with rac_vcr.use_cassette("test_closest_value.json"):
+            repository = ASpace(
+                baseurl="http://localhost:8089").repositories(2)
+            archival_object = repository.archival_objects(7)
+            value = data_helpers.closest_value(archival_object, "extents")
+            self.assertTrue(len(value) > 0)
 
     def test_get_orphans(self):
         pass
