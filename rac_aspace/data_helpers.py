@@ -213,11 +213,17 @@ def indicates_restriction(rights_statement):
     Returns:
         bool: True if rights statement indicates a restriction, False if not.
     """
-    today = datetime.now()
-    for act in rights_statement.acts:
-        act_json = act.json()
-        if (act_json.get("restriction") in ["disallow", "conditional"] and datetime.fromisoformat(
-                act_json.get('end_date', datetime.isoformat(today))) >= today):
+    def is_expired(date):
+        today = datetime.now()
+        date = date if date else datetime.isoformat(today)
+        return False if (datetime.fromisoformat(date) >= today) else True
+
+    rights_json = rights_statement.json()
+    if is_expired(rights_json.get("end_date")):
+        return False
+    for act in rights_json.get("acts"):
+        if (act.get("restriction") in [
+                "disallow", "conditional"] and not is_expired(act.get("end_date"))):
             return True
     return False
 
