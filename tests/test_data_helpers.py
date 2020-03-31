@@ -72,7 +72,14 @@ class TestDataHelpers(unittest.TestCase):
             self.assertTrue(len(value) > 0)
 
     def test_get_orphans(self):
-        pass
+        with rac_vcr.use_cassette("test_get_orphans.json"):
+            repository = ASpace(
+                baseurl="http://localhost:8089").repositories(2)
+            archival_objects = repository.archival_objects
+            orphans = data_helpers.get_orphans(
+                archival_objects, "linked_agents")
+            for o in orphans:
+                self.assertIsInstance(o, JSONModelObject)
 
     def test_get_expression(self):
         """Tests whether the date expression function works as intended."""
