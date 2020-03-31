@@ -43,13 +43,13 @@ class TestDataHelpers(unittest.TestCase):
         result = data_helpers.text_in_note(note, query_string)
         self.assertTrue(result)
 
-    def test_get_locations(self):
+    def test_object_locations(self):
         """Checks whether the function returns a list of JSONModelObjects."""
         with rac_vcr.use_cassette("test_get_locations.json"):
             repository = ASpace(
                 baseurl="http://localhost:8089").repositories(2)
             archival_object = repository.archival_objects(7)
-            locations = data_helpers.get_locations(archival_object)
+            locations = data_helpers.object_locations(archival_object)
             self.assertIsInstance(locations, list)
             self.assertEqual(len(locations), 1)
             for obj in locations:
@@ -88,12 +88,6 @@ class TestDataHelpers(unittest.TestCase):
             date = self.obj_from_fixture(f)
             result = data_helpers.get_expression(date)
             self.assertTrue(result, "1905-1980")
-
-    def test_container_objects(self):
-        pass
-
-    def test_location_containers(self):
-        pass
 
     def test_indicates_restriction(self):
         """Tests whether rights statements are correctly parsed for restrictions."""

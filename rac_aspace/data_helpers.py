@@ -74,7 +74,7 @@ def text_in_note(note, query_string):
     return (True if ratio > CONFIDENCE_RATIO else False)
 
 
-def get_locations(archival_object):
+def object_locations(archival_object):
     """Finds locations associated with an archival object.
 
     Args:
@@ -190,71 +190,6 @@ def get_expression(date):
         else:
             expression = date_json["begin"]
     return expression
-
-
-def container_objects(top_container):
-    """Returns all archival objects associated with a top container.
-
-    Args:
-        top_container (dict): an ArchivesSpace top_container object.
-
-    Returns:
-        list: a list of associated archival objects.
-    """
-    params = {
-        "page": 1,
-        "filter_term[]": {"top_container_uri_u_sstr": top_container.uri},
-        "filter": {
-            "query": {
-                "op": "AND",
-                "subqueries": [{
-                    "field": "top_container_uri_u_sstr",
-                    "value": top_container.uri,
-                    "negated": False,
-                    "literal": False,
-                    "jsonmodel_type": "field_query"
-                }],
-                "jsonmodel_type": "boolean_query"
-            },
-            "jsonmodel_type": "advanced_query"
-        }
-    }
-    return top_container.client.get_paged(
-        "/repositories/{}/search".format(2), params=params)
-    # TODO: get repository ID from configs
-
-
-def location_containers(location):
-    """Returns all top_containers associated with a location.
-
-    Args:
-        location (dict): an ArchivesSpace location object.
-
-    Returns:
-        list: a list of associated top_containers
-    """
-    params = {
-        "page": 1,
-        "type[]": "top_container",
-        "filter_term[]": {"location_uris": location.uri},
-        "filter": {
-            "query": {
-                "op": "AND",
-                "subqueries": [{
-                    "field": "location_uris",
-                    "value": location.uri,
-                    "negated": False,
-                    "literal": False,
-                    "jsonmodel_type": "field_query"
-                }],
-                "jsonmodel_type": "boolean_query"
-            },
-            "jsonmodel_type": "advanced_query"
-        }
-    }
-    return location.client.get_paged(
-        "/repositories/{}/search".format(2), params=params)
-    # TODO: get repository ID from configs
 
 
 def indicates_restriction(rights_statement):
