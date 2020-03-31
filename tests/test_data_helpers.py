@@ -5,17 +5,29 @@ import json
 import os
 import unittest
 
-from asnake.jsonmodel import wrap_json_object
+import vcr
+from asnake.aspace import ASpace
+from asnake.jsonmodel import JSONModelObject, wrap_json_object
 from rac_aspace import data_helpers
+
+rac_vcr = vcr.VCR(
+    serializer='json',
+    cassette_library_dir=os.path.join("fixtures", "cassettes"),
+    record_mode='once',
+    match_on=['path', 'method'],
+    filter_query_parameters=['username', 'password'],
+    filter_headers=['Authorization', 'X-ArchivesSpace-Session'],
+)
 
 
 class TestDataHelpers(unittest.TestCase):
     """Tests the data helper functions."""
 
-    def obj_from_fixture(self, filename):
+    def obj_from_fixture(self, filename, client=None):
         with open(os.path.join("fixtures", filename)) as json_file:
             data = json.load(json_file)
-            return wrap_json_object(data)
+            obj = wrap_json_object(data, client=client)
+            return obj
 
     def test_get_note_text(self):
         """Checks whether the returned note text matches the selected query string."""
@@ -31,31 +43,17 @@ class TestDataHelpers(unittest.TestCase):
         result = data_helpers.text_in_note(note, query_string)
         self.assertTrue(result)
 
-    # def test_get_locations(self):
-        """
-        Data helper as written won't work without AS calls. Container and Location
-        information are in different objects, not just Archival Objects.
-        """
-        # """
-        # Checks whether the function returns a list and if it is empty.
-        # Need to write a way to get the archival_object information from AS.
-
-        # Args:
-        # archival_object (dict): an ArchivesSpace archival object
-
-        # Returns:
-        # bool: Boolean. True if locations exists and is not empty.
-        # bool: Boolean. True if locations is a list. False if any other data type.
-        # """
-        # with open(os.path.join("fixtures", "archival_object.json"), "r") as json_file:
-        # data = json.load(json_file)
-        # archival_object = wrap_json_object(data)
-        # locations = get_locations(archival_object)
-        # self.assertNotEqual(
-        # locations, False,
-        # "Get locatins returned an error: {}".format(locations)
-        # )
-        # self.assertIsInstance(locations, list)
+    def test_get_locations(self):
+        """Checks whether the function returns a list of JSONModelObjects."""
+        with rac_vcr.use_cassette("test_get_locations.json"):
+            repository = ASpace(
+                baseurl="http://localhost:8089").repositories(2)
+            archival_object = repository.archival_objects(7)
+            locations = data_helpers.get_locations(archival_object)
+            self.assertIsInstance(locations, list)
+            self.assertEqual(len(locations), 1)
+            for obj in locations:
+                self.assertIsInstance(obj, JSONModelObject)
 
     def test_format_resource_id(self):
         """Checks whether the function returns a concatenated string as expected."""
@@ -79,7 +77,10 @@ class TestDataHelpers(unittest.TestCase):
             result = data_helpers.get_expression(date)
             self.assertTrue(result, "1905-1980")
 
-    def test_associated_objects(self):
+    def test_container_objects(self):
+        pass
+
+    def test_location_containers(self):
         pass
 
     def test_indicates_restriction(self):
