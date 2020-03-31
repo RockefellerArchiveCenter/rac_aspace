@@ -203,8 +203,9 @@ def indicates_restriction(rights_statement):
     """
     def is_expired(date):
         today = datetime.now()
-        date = date if date else datetime.isoformat(today)
-        return False if (datetime.fromisoformat(date) >= today) else True
+        date = date if date else datetime.strftime("%Y-%m-%d")
+        return False if (
+            datetime.strptime(date, "%Y-%m-%d") >= today) else True
 
     rights_json = rights_statement.json()
     if is_expired(rights_json.get("end_date")):
