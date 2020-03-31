@@ -83,7 +83,9 @@ class TestDataHelpers(unittest.TestCase):
 
     def test_get_expression(self):
         """Tests whether the date expression function works as intended."""
-        files = ['date_expression.json', 'date_no_expression.json']
+        files = ['date_expression.json',
+                 'date_no_expression.json',
+                 'date_no_expression_no_end.json']
         for f in files:
             date = self.obj_from_fixture(f)
             result = data_helpers.get_expression(date)
