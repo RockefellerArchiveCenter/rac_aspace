@@ -6,8 +6,10 @@ elements. They can also extend (or invert) relationships between different
 objects.
 
 """
+from datetime import datetime
 import re
 from fuzzywuzzy import fuzz
+from string import Formatter
 
 
 def get_note_text(note):
@@ -72,7 +74,7 @@ def text_in_note(note, query_string):
     return (True if ratio > CONFIDENCE_RATIO else False)
 
 
-def get_locations(archival_object):
+def object_locations(archival_object):
     """Finds locations associated with an archival object.
 
     Args:
@@ -83,38 +85,34 @@ def get_locations(archival_object):
     """
     locations = []
     for instance in archival_object.instances:
-        locations.append(instance.top_container.location)
+        top_container = instance.sub_container.top_container.reify()
+        locations += top_container.container_locations
     return locations
 
 
-def format_location(location):
-    """Generates a human-readable string describing a location.
+def format_from_obj(obj, format_string):
+    """Generates a human-readable string from an object.
 
     Args:
-        location (dict): an ArchivesSpace location object.
+        location (dict): an ArchivesSpace object.
+        string_template (dict): an (optional) Python string template
 
     Returns:
-        str: a string representing the location
+        str: a string in the chosen format
     """
-    pass
-# QUESTION: pass a format string
-# QUESTION: is this a more generalizable function?
-# grab fields from location
-# format string "{} {}, {}-{}"
-# return format string
-
-
-def format_container(top_container):
-    """Generates a human-readable string describing a container.
-
-    Args:
-        top_container (dict): an ArchivesSpace top_container object.
-
-    Returns:
-        str: a concatenation of top container type and indicator.
-    """
-    return "{0} {1}".format(top_container.type,
-                            top_container.indicator)
+    if not format_string:
+        raise Exception("No format string provided.")
+    else:
+        try:
+            d = {}
+            matches = [i[1] for i in Formatter().parse(format_string) if i[1]]
+            for m in matches:
+                d.update({m: getattr(obj, m, "")})
+            return format_string.format(**d)
+        except KeyError as e:
+            raise KeyError(
+                "The field {} was not found in this object".format(
+                    str(e)))
 
 
 def format_resource_id(resource, separator=":"):
@@ -151,7 +149,7 @@ def closest_value(archival_object, key):
         The value of the key, which could be a str, list, or dict
     """
     if getattr(archival_object, key) not in ['', [], {}, None]:
-        return archival_object.key
+        return getattr(archival_object, key)
     else:
         for ancestor in archival_object.ancestors:
             return closest_value(ancestor, key)
@@ -194,19 +192,6 @@ def get_expression(date):
     return expression
 
 
-def associated_objects(top_container):
-    """Returns all archival objects associated with a top container.
-
-    Args:
-        top_container (dict): an ArchivesSpace top_container object.
-
-    Returns:
-        list: a list of associated archival objects.
-    """
-    pass
-# probably have to do some SOLR stuff
-
-
 def indicates_restriction(rights_statement):
     """Parses a rights statement to determine if it indicates a restriction.
 
@@ -216,13 +201,20 @@ def indicates_restriction(rights_statement):
     Returns:
         bool: True if rights statement indicates a restriction, False if not.
     """
-    # If rights_statement.date_end is before today:
-    # return False
-    # for rights_granted in rights_statement.rights_granted:
-    # if rights_granted.date_end is after today:
-    # if rights_granted.act in ["disallow", "conditional"]:
-    # return True
-    # return False
+    def is_expired(date):
+        today = datetime.now()
+        date = date if date else datetime.strftime("%Y-%m-%d")
+        return False if (
+            datetime.strptime(date, "%Y-%m-%d") >= today) else True
+
+    rights_json = rights_statement.json()
+    if is_expired(rights_json.get("end_date")):
+        return False
+    for act in rights_json.get("acts"):
+        if (act.get("restriction") in [
+                "disallow", "conditional"] and not is_expired(act.get("end_date"))):
+            return True
+    return False
 
 
 def is_restricted(archival_object):
