@@ -13,7 +13,6 @@
     "id_0": "1",
     "id_1": "2",
     "id_2": "3",
-    "id_3": "4",
     "language": "ang",
     "level": "collection",
     "jsonmodel_type": "resource",
@@ -117,7 +116,24 @@
     "deaccessions": [],
     "related_accessions": [],
     "classifications": [],
-    "notes": [],
+    "notes": [
+        {
+            "jsonmodel_type": "note_multipart",
+            "persistent_id": "7e39d839488e068c65f822e52f5ffa01",
+            "type": "accessrestrict",
+            "rights_restriction": {
+                "local_access_restriction_type": []
+            },
+            "subnotes": [
+                {
+                    "jsonmodel_type": "note_text",
+                    "content": "materials are restricted",
+                    "publish": true
+                }
+            ],
+            "publish": true
+        }
+    ],
     "uri": "/repositories/2/resources/13064",
     "repository": {
         "ref": "/repositories/2"
