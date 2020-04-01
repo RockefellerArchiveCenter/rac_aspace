@@ -126,11 +126,12 @@ def format_resource_id(resource, separator=":"):
     Returns:
         str: a concatenated four-part ID for the resource record.
     """
+    resource_json = resource.json()
     resource_id = []
     for x in range(4):
         try:
-            resource_id.append(getattr(resource, "id_{0}".format(x)))
-        except AttributeError:
+            resource_id.append(resource_json["id_{0}".format(x)])
+        except KeyError:
             break
     return separator.join(resource_id)
 

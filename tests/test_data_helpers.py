@@ -31,10 +31,12 @@ class TestDataHelpers(unittest.TestCase):
 
     def test_get_note_text(self):
         """Checks whether the returned note text matches the selected query string."""
-        note = self.obj_from_fixture("note_multi.json")
-        result = data_helpers.get_note_text(note)
-        self.assertTrue(result, list)
-        self.assertEqual(result, ["materials are restricted"])
+        for fixture, string in [
+                ("note_multi.json", "materials are restricted")]:
+            note = self.obj_from_fixture(fixture)
+            result = data_helpers.get_note_text(note)
+            self.assertTrue(result, list)
+            self.assertEqual(result, [string])
 
     def test_text_in_note(self):
         """Checks whether the query string and note content are close to a match."""
@@ -57,11 +59,16 @@ class TestDataHelpers(unittest.TestCase):
 
     def test_format_resource_id(self):
         """Checks whether the function returns a concatenated string as expected."""
-        separator = ":"
-        resource = self.obj_from_fixture("archival_object.json")
-        result = data_helpers.format_resource_id(resource, separator)
-        self.assertIsInstance(result, str)
-        self.assertEqual(result, '1:2:3:4')
+        for fixture, formatted, separator in [
+                ("archival_object.json", "1;2;3;4", ';'),
+                ("archival_object_2.json", "1:2:3", None)]:
+            resource = self.obj_from_fixture(fixture)
+            if separator is None:
+                result = data_helpers.format_resource_id(resource)
+            else:
+                result = data_helpers.format_resource_id(resource, separator)
+            self.assertIsInstance(result, str)
+            self.assertEqual(result, formatted)
 
     def test_closest_value(self):
         with rac_vcr.use_cassette("test_closest_value.json"):
