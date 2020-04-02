@@ -31,17 +31,25 @@ class TestDataHelpers(unittest.TestCase):
 
     def test_get_note_text(self):
         """Checks whether the returned note text matches the selected query string."""
-        for fixture, string in [
-                ("note_index.json", '"title1, title2"'),
-                ("note_multi.json", "materials are restricted"),
-                ("note_multi_chronology.json", '"event1", "event2"'),
-                ("note_multi_defined.json", '"1", "2"'),
-                ("note_multi_ordered.json", '"item1", "item2"'),
-                ("note_single.json", "New York Mets")]:
+        for fixture, expected in [
+                ("note_bibliography.json", [
+                    "bibliography", "item 1", "item 2"]),
+                ("note_index.json", ["title1", "title2"]),
+                ("note_multi.json", ["materials are restricted"]),
+                ("note_multi_chronology.json", [
+                    "general note with chronology", "date", "event1", "event2"]),
+                ("note_multi_defined.json", [
+                    "bioghist with defined list", "item", "1", "item", "2"]),
+                ("note_multi_ordered.json", [
+                    "Bioghist with ordered list", "item1", "item2"]),
+                ("note_single.json", ["New York Mets"])]:
             note = self.obj_from_fixture(fixture)
             result = data_helpers.get_note_text(note)
+            print(result)
             self.assertTrue(result, list)
-            self.assertEqual(result, [string])
+            self.assertEqual(
+                set(result), set(expected),
+                "{} returned {}, expecting {}".format(fixture, result, expected))
 
     def test_text_in_note(self):
         """Checks whether the query string and note content are close to a match."""
