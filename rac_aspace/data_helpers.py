@@ -163,7 +163,6 @@ def closest_value(archival_object, key):
             return closest_value(ancestor, key)
 
 
-@check_type(list)
 def get_orphans(object_list, null_attribute):
     """Finds objects in a list which do not have a value in a specified field.
 
