@@ -140,8 +140,8 @@ class TestDataHelpers(unittest.TestCase):
         ]:
             date = self.obj_from_fixture(fixture)
             if format_string is None:
-                with self.assertRaises(Exception) as excpt:
-                    formatted = data_helpers.format_from_obj(date)
+                self.assertRaises(
+                    Exception, data_helpers.format_from_obj, date, None)
             else:
                 formatted = data_helpers.format_from_obj(
                     date, format_string)
