@@ -96,6 +96,7 @@ def object_locations(archival_object):
     return locations
 
 
+@check_type(JSONModelObject)
 def format_from_obj(obj, format_string):
     """Generates a human-readable string from an object.
 
@@ -201,6 +202,7 @@ def get_expression(date):
     return expression
 
 
+@check_type(JSONModelObject)
 def indicates_restriction(rights_statement):
     """Parses a rights statement to determine if it indicates a restriction.
 
