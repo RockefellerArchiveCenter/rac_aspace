@@ -32,7 +32,12 @@ class TestDataHelpers(unittest.TestCase):
     def test_get_note_text(self):
         """Checks whether the returned note text matches the selected query string."""
         for fixture, string in [
-                ("note_multi.json", "materials are restricted")]:
+                ("note_index.json", '"title1, title2"'),
+                ("note_multi.json", "materials are restricted"),
+                ("note_multi_chronology.json", '"event1", "event2"'),
+                ("note_multi_defined.json", '"1", "2"'),
+                ("note_multi_ordered.json", '"item1", "item2"'),
+                ("note_single.json", "New York Mets")]:
             note = self.obj_from_fixture(fixture)
             result = data_helpers.get_note_text(note)
             self.assertTrue(result, list)
