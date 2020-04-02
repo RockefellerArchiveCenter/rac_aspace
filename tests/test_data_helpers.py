@@ -132,14 +132,24 @@ class TestDataHelpers(unittest.TestCase):
 
     def test_format_from_obj(self):
         """Test that format strings can be passed to objects as expected."""
-        date = self.obj_from_fixture("date_expression.json")
-        formatted = data_helpers.format_from_obj(
-            date, "{begin} - {end} ({expression})")
-        self.assertEqual(formatted, "1905 - 1980 (1905-1980)")
-        with self.assertRaises(KeyError) as excpt:
-            formatted = data_helpers.format_from_obj(
-                date, "{start} - {end} ({expression})")
-        self.assertIn("was not found in this object", str(excpt.exception))
+        for fixture, format_string in [
+            ("date_expression.json", "{begin} - {end} ({expression})"),
+            ("date_expression.json", None),
+        ]:
+            date = self.obj_from_fixture(fixture)
+            if format_string is None:
+                with self.assertRaises(Exception) as excpt:
+                    formatted = data_helpers.format_from_obj(date)
+            else:
+                formatted = data_helpers.format_from_obj(
+                    date, format_string)
+                self.assertEqual(formatted, "1905 - 1980 (1905-1980)")
+                with self.assertRaises(KeyError) as excpt:
+                    formatted = data_helpers.format_from_obj(
+                        date, "{start} - {end} ({expression})")
+                self.assertIn(
+                    "was not found in this object", str(
+                        excpt.exception))
 
 
 if __name__ == '__main__':

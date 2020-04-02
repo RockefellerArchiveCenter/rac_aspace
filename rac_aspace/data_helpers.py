@@ -34,11 +34,6 @@ def get_note_text(note):
                 'note_orderedlist', 'note_definedlist', 'note_index',
                 'note_chronology']:
             content = subnote.items
-        elif subnote.jsonmodel_type == 'note_bibliography':
-            data = []
-            data.append(subnote.content)
-            data.append(subnote.items)
-            content = data
         else:
             content = subnote.content if isinstance(
                 subnote.content, list) else [subnote.content]
@@ -46,8 +41,16 @@ def get_note_text(note):
 
     if note.jsonmodel_type == "note_singlepart":
         content = note.content
+    elif note.jsonmodel_type == 'note_bibliography':
+        data = []
+        data.append(note.content)
+        data.append(note.items)
+        content = data
     elif note.jsonmodel_type == "note_index":
-        content = note.items
+        data = []
+        for item in note.items:
+            data.append(item.value)
+        content = data
     else:
         subnote_content_list = list(parse_subnote(sn) for sn in note.subnotes)
         content = [
