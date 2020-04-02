@@ -3,3 +3,4 @@ tox==3.14.0
 pytest
 pre-commit==2.1.1 # Not compatible with Python 3.4 or 3.5
 sphinx==2.4.4 # Not compatible with Python 3.4
+vcrpy==4.0.2

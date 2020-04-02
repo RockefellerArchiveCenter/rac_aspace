@@ -18,18 +18,17 @@ class TestSerializers(unittest.TestCase):
                           {"column1": "another value", "column2": "blah"}]
         self.short_data = [{"column1": "value", "column2": "value"}]
 
-    def test_csv_serializer(self):
-        """Tests CSVWriter.
+    def check_serializer(self, serializer):
+        """Abstract function to test serializers.
 
         Ensures that the correct filename is created, and that the expected
-        number of rows are written to the file.
-        """
-        expected_filepath = "spreadsheet.csv"
-        for filepath in ["spreadsheet.csv", "spreadsheet",
-                         "spreadsheet.tsv", "spreadsheet.jpeg"]:
+        number of rows are written to the file."""
+        expected_filepath = "spreadsheet.{}".format(serializer.extension)
+        for filepath in ["spreadsheet.{}".format(serializer.extension), "spreadsheet",
+                         "spreadsheet.csv", "spreadsheet.jpeg"]:
             for data in [self.long_data, self.short_data]:
-                serializer = serializers.CSVWriter(filepath)
-                serializer.write_data(data)
+                loaded = serializer(filepath)
+                loaded.write_data(data)
                 with open(expected_filepath, "r") as out_file:
                     reader = csv.reader(
                         out_file, delimiter=serializer.delimiter)
@@ -39,25 +38,13 @@ class TestSerializers(unittest.TestCase):
                     self.assertEqual(len(out_data), len(data) + 1)
                 remove(expected_filepath)
 
-    def test_tsv_serializer(self):
-        """Tests TSVWriter.
+    def test_csv_serializer(self):
+        """Tests CSVWriter."""
+        self.check_serializer(serializers.CSVWriter)
 
-        Ensures that the correct filename is created, and that the expected
-        number of rows are written to the file.
-        """
-        expected_filepath = "spreadsheet.tsv"
-        for filepath in ["spreadsheet.tsv", "spreadsheet",
-                         "spreadsheet.csv", "spreadsheet.jpeg"]:
-            for data in [self.long_data, self.short_data]:
-                serializer = serializers.TSVWriter(filepath)
-                serializer.write_data(data)
-                with open(expected_filepath, "r") as out_file:
-                    reader = csv.reader(
-                        out_file, delimiter=serializer.delimiter)
-                    out_data = [r for r in reader]
-                    self.assertEqual(out_data[0], ["column1", "column2"])
-                    self.assertEqual(len(out_data), len(data) + 1)
-                remove(expected_filepath)
+    def test_tsv_serializer(self):
+        """Tests TSVWriter."""
+        self.check_serializer(serializers.TSVWriter)
 
     def test_filemodes(self):
         """Tests different filemodes.
