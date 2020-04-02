@@ -32,12 +32,7 @@ class TestDataHelpers(unittest.TestCase):
     def test_get_note_text(self):
         """Checks whether the returned note text matches the selected query string."""
         for fixture, string in [
-                ("note_index.json", '"title1, title2"'),
-                ("note_multi.json", "materials are restricted"),
-                ("note_multi_chronology.json", '"event1", "event2"'),
-                ("note_multi_defined.json", '"1", "2"'),
-                ("note_multi_ordered.json", '"item1", "item2"'),
-                ("note_single.json", "New York Mets")]:
+                ("note_multi.json", "materials are restricted")]:
             note = self.obj_from_fixture(fixture)
             result = data_helpers.get_note_text(note)
             self.assertTrue(result, list)
@@ -108,7 +103,8 @@ class TestDataHelpers(unittest.TestCase):
         for fixture, outcome in [
                 ("rights_statement_restricted.json", True),
                 ("rights_statement_open.json", False),
-                ("rights_statement_conditional.json", True)]:
+                ("rights_statement_conditional.json", True),
+                ("rights_statement_not_restricted.json", False)]:
             statement = self.obj_from_fixture(fixture)
             status = data_helpers.indicates_restriction(statement)
             self.assertEqual(
@@ -120,7 +116,8 @@ class TestDataHelpers(unittest.TestCase):
         """Tests whether the function can find restrictions in an AS archival object."""
         for fixture, outcome in [
             ("archival_object.json", True),
-            ("archival_object_2.json", True)
+            ("archival_object_2.json", True),
+            ("archival_object_3.json", False)
         ]:
             archival_object = self.obj_from_fixture(fixture)
             result = data_helpers.is_restricted(archival_object)
