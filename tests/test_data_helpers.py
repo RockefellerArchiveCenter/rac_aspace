@@ -116,7 +116,8 @@ class TestDataHelpers(unittest.TestCase):
         for fixture, outcome in [
                 ("rights_statement_restricted.json", True),
                 ("rights_statement_open.json", False),
-                ("rights_statement_conditional.json", True)]:
+                ("rights_statement_conditional.json", True),
+                ("rights_statement_not_restricted.json", False)]:
             statement = self.obj_from_fixture(fixture)
             status = data_helpers.indicates_restriction(statement)
             self.assertEqual(
@@ -128,7 +129,8 @@ class TestDataHelpers(unittest.TestCase):
         """Tests whether the function can find restrictions in an AS archival object."""
         for fixture, outcome in [
             ("archival_object.json", True),
-            ("archival_object_2.json", True)
+            ("archival_object_2.json", True),
+            ("archival_object_3.json", False)
         ]:
             archival_object = self.obj_from_fixture(fixture)
             result = data_helpers.is_restricted(archival_object)
