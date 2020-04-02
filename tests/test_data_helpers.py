@@ -113,12 +113,13 @@ class TestDataHelpers(unittest.TestCase):
 
     def test_is_restricted(self):
         """Tests whether the function can find restrictions in an AS archival object."""
-        archival_object = self.obj_from_fixture("archival_object.json")
-        result = data_helpers.is_restricted(archival_object)
-        self.assertEqual(result, True)
-        """
-        Cannot currently test the restrictions portion because data helper is unwritten
-        """
+        for fixture, outcome in [
+            ("archival_object.json", True),
+            ("archival_object_2.json", True)
+        ]:
+            archival_object = self.obj_from_fixture(fixture)
+            result = data_helpers.is_restricted(archival_object)
+            self.assertEqual(result, outcome)
 
     def test_strip_html_tags(self):
         """Ensures HTML tags are correctly removed from strings."""
