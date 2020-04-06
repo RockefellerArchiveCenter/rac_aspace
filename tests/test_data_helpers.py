@@ -45,7 +45,6 @@ class TestDataHelpers(unittest.TestCase):
                 ("note_single.json", ["New York Mets"])]:
             note = self.obj_from_fixture(fixture)
             result = data_helpers.get_note_text(note)
-            print(result)
             self.assertTrue(result, list)
             self.assertEqual(
                 set(result), set(expected),
@@ -76,7 +75,7 @@ class TestDataHelpers(unittest.TestCase):
                 ("archival_object.json", "1;2;3;4", ';'),
                 ("archival_object_2.json", "1:2:3", None)]:
             resource = self.obj_from_fixture(fixture)
-            if separator is None:
+            if not separator:
                 result = data_helpers.format_resource_id(resource)
             else:
                 result = data_helpers.format_resource_id(resource, separator)
@@ -152,7 +151,7 @@ class TestDataHelpers(unittest.TestCase):
             ("date_expression.json", None),
         ]:
             date = self.obj_from_fixture(fixture)
-            if format_string is None:
+            if not format_string:
                 self.assertRaises(
                     Exception, data_helpers.format_from_obj, date, None)
             else:
