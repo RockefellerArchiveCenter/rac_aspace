@@ -1,7 +1,7 @@
 import csv
 
 
-class Serializer:
+class BaseSerializer:
 
     def __init__(self, filename, filemode="w"):
         """Sets initial attributes for serializers.
@@ -48,14 +48,14 @@ class Serializer:
             return [row for row in reader]
 
 
-class CSVSerializer(Serializer):
+class CSVSerializer(BaseSerializer):
     """Writes data to a CSV file."""
 
     delimiter = ","
     extension = "csv"
 
 
-class TSVSerializer(Serializer):
+class TSVSerializer(BaseSerializer):
     """Writes data to a TSV file."""
 
     delimiter = "\t"
