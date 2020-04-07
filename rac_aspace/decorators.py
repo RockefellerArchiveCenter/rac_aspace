@@ -1,4 +1,6 @@
 from functools import wraps
+
+
 def check_type(obj_type):
     def real_decorator(func):
         @wraps(func)
