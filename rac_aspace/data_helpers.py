@@ -35,14 +35,14 @@ def get_note_text(note):
             list: a list containing subnote content.
         """
         if subnote.jsonmodel_type in [
-                'note_orderedlist', 'note_definedlist', 'note_index',
-                'note_chronology']:
+                'note_orderedlist', 'note_index']:
             content = subnote.items
-        elif subnote.jsonmodel_type == 'note_bibliography':
-            data = []
-            data.append(subnote.content)
-            data.append(subnote.items)
-            content = data
+        elif subnote.jsonmodel_type in ['note_chronology', 'note_definedlist']:
+            content = []
+            for k in subnote.items:
+                for i in k:
+                    content += k.get(i) if isinstance(k.get(i),
+                                                      list) else [k.get(i)]
         else:
             content = subnote.content if isinstance(
                 subnote.content, list) else [subnote.content]
@@ -50,8 +50,16 @@ def get_note_text(note):
 
     if note.jsonmodel_type == "note_singlepart":
         content = note.content
+    elif note.jsonmodel_type == 'note_bibliography':
+        data = []
+        data += note.content
+        data += note.items
+        content = data
     elif note.jsonmodel_type == "note_index":
-        content = note.items
+        data = []
+        for item in note.items:
+            data.append(item.value)
+        content = data
     else:
         subnote_content_list = list(parse_subnote(sn) for sn in note.subnotes)
         content = [
@@ -133,11 +141,12 @@ def format_resource_id(resource, separator=":"):
     Returns:
         str: a concatenated four-part ID for the resource record.
     """
+    resource_json = resource.json()
     resource_id = []
     for x in range(4):
         try:
-            resource_id.append(getattr(resource, "id_{0}".format(x)))
-        except AttributeError:
+            resource_id.append(resource_json["id_{0}".format(x)])
+        except KeyError:
             break
     return separator.join(resource_id)
 

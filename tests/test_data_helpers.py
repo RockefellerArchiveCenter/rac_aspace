@@ -31,10 +31,24 @@ class TestDataHelpers(unittest.TestCase):
 
     def test_get_note_text(self):
         """Checks whether the returned note text matches the selected query string."""
-        note = self.obj_from_fixture("note_multi.json")
-        result = data_helpers.get_note_text(note)
-        self.assertTrue(result, list)
-        self.assertEqual(result, ["materials are restricted"])
+        for fixture, expected in [
+                ("note_bibliography.json", [
+                    "bibliography", "item 1", "item 2"]),
+                ("note_index.json", ["title1", "title2"]),
+                ("note_multi.json", ["materials are restricted"]),
+                ("note_multi_chronology.json", [
+                    "general note with chronology", "date", "event1", "event2"]),
+                ("note_multi_defined.json", [
+                    "bioghist with defined list", "item", "1", "item", "2"]),
+                ("note_multi_ordered.json", [
+                    "Bioghist with ordered list", "item1", "item2"]),
+                ("note_single.json", ["New York Mets"])]:
+            note = self.obj_from_fixture(fixture)
+            result = data_helpers.get_note_text(note)
+            self.assertTrue(result, list)
+            self.assertEqual(
+                set(result), set(expected),
+                "{} returned {}, expecting {}".format(fixture, result, expected))
 
     def test_text_in_note(self):
         """Checks whether the query string and note content are close to a match."""
@@ -57,11 +71,16 @@ class TestDataHelpers(unittest.TestCase):
 
     def test_format_resource_id(self):
         """Checks whether the function returns a concatenated string as expected."""
-        separator = ":"
-        resource = self.obj_from_fixture("archival_object.json")
-        result = data_helpers.format_resource_id(resource, separator)
-        self.assertIsInstance(result, str)
-        self.assertEqual(result, '1:2:3:4')
+        for fixture, formatted, separator in [
+                ("archival_object.json", "1;2;3;4", ';'),
+                ("archival_object_2.json", "1:2:3", None)]:
+            resource = self.obj_from_fixture(fixture)
+            if not separator:
+                result = data_helpers.format_resource_id(resource)
+            else:
+                result = data_helpers.format_resource_id(resource, separator)
+            self.assertIsInstance(result, str)
+            self.assertEqual(result, formatted)
 
     def test_closest_value(self):
         with rac_vcr.use_cassette("test_closest_value.json"):
@@ -83,7 +102,9 @@ class TestDataHelpers(unittest.TestCase):
 
     def test_get_expression(self):
         """Tests whether the date expression function works as intended."""
-        files = ['date_expression.json', 'date_no_expression.json']
+        files = ['date_expression.json',
+                 'date_no_expression.json',
+                 'date_no_expression_no_end.json']
         for f in files:
             date = self.obj_from_fixture(f)
             result = data_helpers.get_expression(date)
@@ -94,7 +115,8 @@ class TestDataHelpers(unittest.TestCase):
         for fixture, outcome in [
                 ("rights_statement_restricted.json", True),
                 ("rights_statement_open.json", False),
-                ("rights_statement_conditional.json", True)]:
+                ("rights_statement_conditional.json", True),
+                ("rights_statement_not_restricted.json", False)]:
             statement = self.obj_from_fixture(fixture)
             status = data_helpers.indicates_restriction(statement)
             self.assertEqual(
@@ -104,12 +126,14 @@ class TestDataHelpers(unittest.TestCase):
 
     def test_is_restricted(self):
         """Tests whether the function can find restrictions in an AS archival object."""
-        archival_object = self.obj_from_fixture("archival_object.json")
-        result = data_helpers.is_restricted(archival_object)
-        self.assertEqual(result, True)
-        """
-        Cannot currently test the restrictions portion because data helper is unwritten
-        """
+        for fixture, outcome in [
+            ("archival_object.json", True),
+            ("archival_object_2.json", True),
+            ("archival_object_3.json", False)
+        ]:
+            archival_object = self.obj_from_fixture(fixture)
+            result = data_helpers.is_restricted(archival_object)
+            self.assertEqual(result, outcome)
 
     def test_strip_html_tags(self):
         """Ensures HTML tags are correctly removed from strings."""
@@ -122,14 +146,27 @@ class TestDataHelpers(unittest.TestCase):
 
     def test_format_from_obj(self):
         """Test that format strings can be passed to objects as expected."""
-        date = self.obj_from_fixture("date_expression.json")
-        formatted = data_helpers.format_from_obj(
-            date, "{begin} - {end} ({expression})")
-        self.assertEqual(formatted, "1905 - 1980 (1905-1980)")
-        with self.assertRaises(KeyError) as excpt:
-            formatted = data_helpers.format_from_obj(
-                date, "{start} - {end} ({expression})")
-        self.assertIn("was not found in this object", str(excpt.exception))
+        for fixture, format_string in [
+            ("date_expression.json", "{begin} - {end} ({expression})"),
+            ("date_expression.json", None),
+        ]:
+            date = self.obj_from_fixture(fixture)
+            if not format_string:
+                with self.assertRaises(Exception) as excpt:
+                    data_helpers.format_from_obj(date, format_string)
+                self.assertEqual(
+                    "No format string provided.", str(
+                        excpt.exception))
+            else:
+                formatted = data_helpers.format_from_obj(
+                    date, format_string)
+                self.assertEqual(formatted, "1905 - 1980 (1905-1980)")
+                with self.assertRaises(KeyError) as excpt:
+                    formatted = data_helpers.format_from_obj(
+                        date, "{start} - {end} ({expression})")
+                self.assertIn(
+                    "was not found in this object", str(
+                        excpt.exception))
 
 
 if __name__ == '__main__':
