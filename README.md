@@ -1,6 +1,6 @@
 # rac_aspace
 
-*Write a brief description of the project, explaining what it does in a couple of sentences.*
+`rac_aspace` is a Python package of common functions based on the Rockefeller Archive Center’s previous coding efforts with the ArchivesSpace API . The goal of the package is to improve code maintainability and facilitate code reuse across our organization. The package implements consistent linting and unit tests and builds upon existing Python packages such as ArchiveSnake. The built in functionality includes data helpers, serialization, and deleting and saving in ArchiveSpace (see descriptions below).
 
 ## Functionality
 
