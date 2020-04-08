@@ -70,6 +70,7 @@ baseurl: http://localhost:8089
 username: 
 password: 
 ```
+ArchivesSnake's README has a [detailed list](https://github.com/archivesspace-labs/ArchivesSnake#configuration) of configuration values and logging config settings.
 
 #### Tests
 
