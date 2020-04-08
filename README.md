@@ -72,6 +72,25 @@ or you can run `autopep8` and `flake8` on their own:
 $ autopep8 --in-place --aggressive -r .
 $ flake8
 ```
+## Building Documentation
+
+rac_aspace uses [Sphinx](https://www.sphinx-doc.org/en/master/index.html) to generate documentation from the docstrings in its code. Sphinx uses the [Napolean extension](https://sphinxcontrib-napoleon.readthedocs.io/en/latest/) to understand the Google style docstrings. Code objects for which we want to create documentation are added to the Sphinx index.rst file as [autodoc](https://autodocs.io/) directives.
+
+Sphinx documentation files are housed within the docs directory in rac_aspace.
+
+### Generating the Documentation Site
+
+Within the docs directory, run:
+
+```
+make html
+```
+
+To access the documentation site, run:
+
+```
+open _build/html/index.html
+```
 
 ## Contributing
 
@@ -106,26 +125,6 @@ To do this:
   3. Open a pull request against master and use the Pull Request Template to describe the changes you are contributing
 
 Pull requests will be reviewed and merged by the rac_aspace maintainers.
-
-## Building Documentation
-
-rac_aspace uses [Sphinx](https://www.sphinx-doc.org/en/master/index.html) to generate documentation from the docstrings in its code. Sphinx uses the [Napolean extension](https://sphinxcontrib-napoleon.readthedocs.io/en/latest/) to understand the Google style docstrings. Code objects for which we want to create documentation are added to the Sphinx index.rst file as [autodoc](https://autodocs.io/) directives.
-
-Sphinx documentation files are housed within the .docs directory in rac_aspace.
-
-### Generating the Documentation Site
-
-Within the .docs directory, run:
-
-```
-make html
-```
-
-To access the documentation site, run:
-
-```
-open _build/html/index.html
-```
 
 ### License
 
