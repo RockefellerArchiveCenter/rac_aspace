@@ -6,15 +6,21 @@ elements. They can also extend (or invert) relationships between different
 objects.
 
 """
+from datetime import datetime
 import re
 from rapidfuzz import fuzz
+from asnake.jsonmodel import JSONModelObject
+from string import Formatter
+
+from .decorators import check_type
 
 
+@check_type(JSONModelObject)
 def get_note_text(note):
     """Parses note content from different note types.
 
     Args:
-        note (dict): an ArchivesSpace note object.
+        note (JSONModelObject): an ArchivesSpace note object.
 
     Returns:
         list: a list containing note content.
@@ -23,20 +29,20 @@ def get_note_text(note):
         """Parses note content from subnotes.
 
         Args:
-            subnote (dict): an ArchivesSpace subnote object.
+            subnote (JSONModelObject): an ArchivesSpace subnote object.
 
         Returns:
             list: a list containing subnote content.
         """
         if subnote.jsonmodel_type in [
-                'note_orderedlist', 'note_definedlist', 'note_index',
-                'note_chronology']:
+                'note_orderedlist', 'note_index']:
             content = subnote.items
-        elif subnote.jsonmodel_type == 'note_bibliography':
-            data = []
-            data.append(subnote.content)
-            data.append(subnote.items)
-            content = data
+        elif subnote.jsonmodel_type in ['note_chronology', 'note_definedlist']:
+            content = []
+            for k in subnote.items:
+                for i in k:
+                    content += k.get(i) if isinstance(k.get(i),
+                                                      list) else [k.get(i)]
         else:
             content = subnote.content if isinstance(
                 subnote.content, list) else [subnote.content]
@@ -44,8 +50,16 @@ def get_note_text(note):
 
     if note.jsonmodel_type == "note_singlepart":
         content = note.content
+    elif note.jsonmodel_type == 'note_bibliography':
+        data = []
+        data += note.content
+        data += note.items
+        content = data
     elif note.jsonmodel_type == "note_index":
-        content = note.items
+        data = []
+        for item in note.items:
+            data.append(item.value)
+        content = data
     else:
         subnote_content_list = list(parse_subnote(sn) for sn in note.subnotes)
         content = [
@@ -53,11 +67,12 @@ def get_note_text(note):
     return content
 
 
+@check_type(JSONModelObject)
 def text_in_note(note, query_string):
     """Performs fuzzy searching against note text.
 
     Args:
-        note (dict): an ArchivesSpace note object.
+        note (JSONModelObject): an ArchivesSpace note object.
         query_string (str): a string to match against.
 
     Returns:
@@ -74,71 +89,71 @@ def text_in_note(note, query_string):
     return bool(ratio)
 
 
-def get_locations(archival_object):
+@check_type(JSONModelObject)
+def object_locations(archival_object):
     """Finds locations associated with an archival object.
 
     Args:
-        archival_object (dict): an ArchivesSpace archival_object.
+        archival_object (JSONModelObject): an ArchivesSpace archival_object.
 
     Returns:
         list: Locations objects associated with the archival object.
     """
     locations = []
     for instance in archival_object.instances:
-        locations.append(instance.top_container.location)
+        top_container = instance.sub_container.top_container.reify()
+        locations += top_container.container_locations
     return locations
 
 
-def format_location(location):
-    """Generates a human-readable string describing a location.
+@check_type(JSONModelObject)
+def format_from_obj(obj, format_string):
+    """Generates a human-readable string from an object.
 
     Args:
-        location (dict): an ArchivesSpace location object.
+        location (dict): an ArchivesSpace object.
 
     Returns:
-        str: a string representing the location
+        str: a string in the chosen format
     """
-    pass
-# QUESTION: pass a format string
-# QUESTION: is this a more generalizable function?
-# grab fields from location
-# format string "{} {}, {}-{}"
-# return format string
+    if not format_string:
+        raise Exception("No format string provided.")
+    else:
+        try:
+            d = {}
+            matches = [i[1] for i in Formatter().parse(format_string) if i[1]]
+            for m in matches:
+                d.update({m: getattr(obj, m, "")})
+            return format_string.format(**d)
+        except KeyError as e:
+            raise KeyError(
+                "The field {} was not found in this object".format(
+                    str(e)))
 
 
-def format_container(top_container):
-    """Generates a human-readable string describing a container.
-
-    Args:
-        top_container (dict): an ArchivesSpace top_container object.
-
-    Returns:
-        str: a concatenation of top container type and indicator.
-    """
-    return "{0} {1}".format(top_container.type,
-                            top_container.indicator)
-
-
+@check_type(JSONModelObject)
 def format_resource_id(resource, separator=":"):
     """Concatenates the four-part ID for a resource record.
 
     Args:
-        resource (dict): an ArchivesSpace resource object.
+        resource (JSONModelObject): an ArchivesSpace resource object.
         separator (str): a separator to insert between the id parts. Defaults
             to `:`.
 
     Returns:
         str: a concatenated four-part ID for the resource record.
     """
+    resource_json = resource.json()
     resource_id = []
     for x in range(4):
         try:
-            resource_id.append(getattr(resource, "id_{0}".format(x)))
-        except AttributeError:
+            resource_id.append(resource_json["id_{0}".format(x)])
+        except KeyError:
             break
     return separator.join(resource_id)
 
 
+@check_type(JSONModelObject)
 def closest_value(archival_object, key):
     """Finds the closest value matching a key.
 
@@ -146,14 +161,14 @@ def closest_value(archival_object, key):
     until it finds a match for a key that is not empty or null.
 
     Args:
-        archival_object (dict): an ArchivesSpace archival_object
+        archival_object (JSONModelObject): an ArchivesSpace archival_object
         key (str): the key to match against.
 
     Returns:
         The value of the key, which could be a str, list, or dict
     """
     if getattr(archival_object, key) not in ['', [], {}, None]:
-        return archival_object.key
+        return getattr(archival_object, key)
     else:
         for ancestor in archival_object.ancestors:
             return closest_value(ancestor, key)
@@ -174,13 +189,14 @@ def get_orphans(object_list, null_attribute):
             yield obj
 
 
+@check_type(JSONModelObject)
 def get_expression(date):
     """Returns a date expression for a date object.
 
     Concatenates start and end dates if no date expression exists.
 
     Args:
-        date (obj): an ArchivesSpace date object
+        date (JSONModelObject): an ArchivesSpace date object
 
     Returns:
         str: a date expression for the date object.
@@ -196,37 +212,33 @@ def get_expression(date):
     return expression
 
 
-def associated_objects(top_container):
-    """Returns all archival objects associated with a top container.
-
-    Args:
-        top_container (dict): an ArchivesSpace top_container object.
-
-    Returns:
-        list: a list of associated archival objects.
-    """
-    pass
-# probably have to do some SOLR stuff
-
-
+@check_type(JSONModelObject)
 def indicates_restriction(rights_statement):
     """Parses a rights statement to determine if it indicates a restriction.
 
     Args:
-        rights_statement (dict): an ArchivesSpace rights statement.
+        rights_statement (JSONModelObject): an ArchivesSpace rights statement.
 
     Returns:
         bool: True if rights statement indicates a restriction, False if not.
     """
-    # If rights_statement.date_end is before today:
-    # return False
-    # for rights_granted in rights_statement.rights_granted:
-    # if rights_granted.date_end is after today:
-    # if rights_granted.act in ["disallow", "conditional"]:
-    # return True
-    # return False
+    def is_expired(date):
+        today = datetime.now()
+        date = date if date else datetime.strftime("%Y-%m-%d")
+        return False if (
+            datetime.strptime(date, "%Y-%m-%d") >= today) else True
+
+    rights_json = rights_statement.json()
+    if is_expired(rights_json.get("end_date")):
+        return False
+    for act in rights_json.get("acts"):
+        if (act.get("restriction") in [
+                "disallow", "conditional"] and not is_expired(act.get("end_date"))):
+            return True
+    return False
 
 
+@check_type(JSONModelObject)
 def is_restricted(archival_object):
     """Parses an archival object to determine if it is restricted.
 
@@ -236,7 +248,7 @@ def is_restricted(archival_object):
     restricted.
 
     Args:
-        archival_object (dict): an ArchivesSpace archival_object.
+        archival_object (JSONModelObject): an ArchivesSpace archival_object.
 
     Returns:
         bool: True if archival object is restricted, False if not.
@@ -252,6 +264,7 @@ def is_restricted(archival_object):
     return False
 
 
+@check_type(str)
 def strip_html_tags(string):
     """Strips HTML tags from a string.
 
