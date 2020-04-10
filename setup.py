@@ -20,5 +20,5 @@ setup(name='rac-aspace',
                      "sphinx>=1.8.5",
                      "tox>=3.14.0",
                      "vcrpy>=4.0.2"],
-      python_requires='>=3.4',
+      python_requires='>=3.5',
       zip_safe=False)
