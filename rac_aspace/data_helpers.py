@@ -8,8 +8,8 @@ objects.
 """
 from datetime import datetime
 import re
+from rapidfuzz import fuzz
 from asnake.jsonmodel import JSONModelObject
-from fuzzywuzzy import fuzz
 from string import Formatter
 
 from .decorators import check_type
@@ -83,8 +83,10 @@ def text_in_note(note, query_string):
     """int: Minimum confidence ratio to match against."""
     note_content = get_note_text(note)
     ratio = fuzz.token_sort_ratio(
-        " ".join([n.lower() for n in note_content]), query_string.lower())
-    return (True if ratio > CONFIDENCE_RATIO else False)
+        " ".join([n.lower() for n in note_content]),
+        query_string.lower(),
+        score_cutoff=CONFIDENCE_RATIO)
+    return bool(ratio)
 
 
 @check_type(JSONModelObject)

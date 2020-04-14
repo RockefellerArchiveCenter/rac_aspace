@@ -38,7 +38,7 @@ RAC_ASpace also simplifies the deletion of unlinked objects in ArchivesSpace. Th
 
 Add software operating systems, programming languages or libraries which are required by this project as an unordered list like this:
 
-*   Python 3.4 or higher
+*   Python 3.5 or higher
 *   [ArchivesSnake](https://github.com/archivesspace-labs/ArchivesSnake)
 *   [tox](https://tox.readthedocs.io/) (for running tests)
 *   [pre-commit](https://pre-commit.com/) (for running linters before committing)

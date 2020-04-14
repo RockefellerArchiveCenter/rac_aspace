@@ -1,6 +1,7 @@
 ---
 
 sudo: false
+dist: bionic
 
 language: python
 cache: pip
@@ -12,9 +13,6 @@ script: tox
 
 matrix:
   include:
-
-    - python: "3.4"
-      env: TOXENV=py34
 
     - python: "3.5"
       env: TOXENV=py35

@@ -47,7 +47,7 @@ autodoc_default_options = {
     'special-members': '__init__',
 }
 
-autodoc_mock_imports = ['asnake', 'fuzzywuzzy']
+autodoc_mock_imports = ['asnake', 'rapidfuzz']
 
 
 # -- Options for HTML output -------------------------------------------------
