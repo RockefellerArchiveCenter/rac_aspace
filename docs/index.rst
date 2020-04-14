@@ -8,6 +8,10 @@ Welcome to rac_aspace's documentation!
 
 .. automodule:: rac_aspace.data_helpers
   :members:
+
+.. automodule:: rac_aspace.serializers
+  :members:
+
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
