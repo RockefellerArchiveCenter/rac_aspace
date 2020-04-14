@@ -1,7 +1,7 @@
 import csv
 
 
-class Serializer:
+class BaseSerializer:
 
     def __init__(self, filename, filemode="w"):
         """Sets initial attributes for serializers.
@@ -14,8 +14,6 @@ class Serializer:
             filename (str): a filename at which the data should be serialized.
             filemode (str): Optional argument used when opening files.
         """
-        if filemode.startswith("r"):
-            raise TypeError("Filemode must allow write operations.")
         self.filemode = filemode
         extension = filename.split(".")[-1]
         if extension != self.extension:
@@ -31,6 +29,8 @@ class Serializer:
         Args:
             data (dict or list): a sequence of dicts.
         """
+        if self.filemode.startswith("r"):
+            raise TypeError("Filemode must allow write operations.")
         fieldnames = list(
             data.keys() if isinstance(
                 data, dict) else data[0].keys())
@@ -40,15 +40,22 @@ class Serializer:
             writer.writeheader()
             writer.writerows(data)
 
+    def read_data(self):
+        if not self.filemode.startswith("r"):
+            raise TypeError("Read-only filemode required.")
+        with open(self.filename, self.filemode) as f:
+            reader = csv.DictReader(f)
+            return [row for row in reader]
 
-class CSVWriter(Serializer):
+
+class CSVSerializer(BaseSerializer):
     """Writes data to a CSV file."""
 
     delimiter = ","
     extension = "csv"
 
 
-class TSVWriter(Serializer):
+class TSVSerializer(BaseSerializer):
     """Writes data to a TSV file."""
 
     delimiter = "\t"
