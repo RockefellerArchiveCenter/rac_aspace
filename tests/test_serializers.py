@@ -39,12 +39,12 @@ class TestSerializers(unittest.TestCase):
                 remove(expected_filepath)
 
     def test_csv_serializer(self):
-        """Tests CSVWriter."""
-        self.check_serializer(serializers.CSVWriter)
+        """Tests CSVSerializer."""
+        self.check_serializer(serializers.CSVSerializer)
 
     def test_tsv_serializer(self):
-        """Tests TSVWriter."""
-        self.check_serializer(serializers.TSVWriter)
+        """Tests TSVSerializer."""
+        self.check_serializer(serializers.TSVSerializer)
 
     def test_filemodes(self):
         """Tests different filemodes.
@@ -53,16 +53,38 @@ class TestSerializers(unittest.TestCase):
         a meaningful exception.
         """
         for filemode in ["a", "a+", "w", "w+"]:
-            for serializer in [serializers.CSVWriter, serializers.TSVWriter]:
+            for serializer in [serializers.CSVSerializer,
+                               serializers.TSVSerializer]:
                 expected_filepath = "test.{}".format(serializer.extension)
                 s = serializer("test", filemode=filemode)
                 s.write_data(self.short_data)
                 self.assertTrue(isfile(expected_filepath))
-                remove(expected_filepath)
-        for filemode in ["r", "r+"]:
-            for serializer in [serializers.CSVWriter, serializers.TSVWriter]:
                 with self.assertRaises(TypeError):
-                    serializer("test", filemode=filemode)
+                    s.read_data()
+        for filemode in ["r", "r+"]:
+            for serializer in [serializers.CSVSerializer,
+                               serializers.TSVSerializer]:
+                s = serializer("test", filemode=filemode)
+                read = s.read_data()
+                self.assertIsInstance(read, list)
+                with self.assertRaises(TypeError):
+                    s.write_data(self.short_data)
+        for filename in ["test.tsv", "test.csv"]:
+            remove(filename)
+
+    def test_read_data(self):
+        """Tests correct returned from a CSV or TSV file."""
+        filename = "read_file.csv"
+        fieldnames = list(self.long_data[0].keys())
+        with open(filename, "w") as f:
+            writer = csv.DictWriter(
+                f, fieldnames=fieldnames, delimiter=",")
+            writer.writeheader()
+            writer.writerows(self.long_data)
+        read = serializers.CSVSerializer(filename, filemode="r").read_data()
+        self.assertIsInstance(read, list)
+        self.assertEqual(read, self.long_data)
+        remove(filename)
 
     def tearDown(self):
         for filename in ["spreadsheet.csv", "spreadsheet.tsv"]:
