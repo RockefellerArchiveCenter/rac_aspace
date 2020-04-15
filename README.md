@@ -56,6 +56,22 @@ Add software operating systems, programming languages or libraries which are req
 
 *Write usage instructions, including configuration details, settings or arguments available.*
 
+#### Configuration
+
+The package relies on ArchivesSnake and looks for a .archivessnake.yml file in the home directory.
+
+	- For OS X and Linux - /home/[my user name]/.archivessnake.yml
+	- For Windows - C:\Users[my user name].archivessnake.yml 
+ 
+An example .archivessnake.yml file: 
+
+```
+baseurl: http://localhost:8089
+username: 
+password: 
+```
+ArchivesSnake's README has a [detailed list](https://github.com/archivesspace-labs/ArchivesSnake#configuration) of configuration values and logging config settings.
+
 #### Tests
 
 `rac_aspace` comes with unit tests as well as linting. The easiest way to make sure all tests pass is to run `tox` from the root of the repository. This will execute all tests, and will also run `autopep8` and `flake8` linters against the codebase.
