@@ -79,7 +79,7 @@ class TestDataHelpers(unittest.TestCase):
         for fixture, formatted, separator in [
                 ("archival_object.json", "1;2;3;4", ';'),
                 ("archival_object_2.json", "1:2:3", None)]:
-            resource = self.obj_from_fixture(fixture)
+            resource = self.load_fixture(fixture)
             if not separator:
                 result = data_helpers.format_resource_id(resource)
             else:
@@ -111,7 +111,7 @@ class TestDataHelpers(unittest.TestCase):
                  'date_no_expression.json',
                  'date_no_expression_no_end.json']
         for f in files:
-            date = self.obj_from_fixture(f)
+            date = self.load_fixture(f)
             result = data_helpers.get_expression(date)
             self.assertTrue(result, "1905-1980")
 

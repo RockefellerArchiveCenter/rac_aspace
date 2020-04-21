@@ -132,7 +132,7 @@ def format_from_obj(obj, format_string):
                     str(e)))
 
 
-@check_type(JSONModelObject)
+# @check_type(JSONModelObject)
 def format_resource_id(resource, separator=":"):
     """Concatenates the four-part ID for a resource record.
 
@@ -144,11 +144,10 @@ def format_resource_id(resource, separator=":"):
     Returns:
         str: a concatenated four-part ID for the resource record.
     """
-    resource_json = resource.json()
     resource_id = []
     for x in range(4):
         try:
-            resource_id.append(resource_json["id_{0}".format(x)])
+            resource_id.append(resource["id_{0}".format(x)])
         except KeyError:
             break
     return separator.join(resource_id)
@@ -190,7 +189,7 @@ def get_orphans(object_list, null_attribute):
             yield obj
 
 
-@check_type(JSONModelObject)
+# @check_type(JSONModelObject)
 def get_expression(date):
     """Returns a date expression for a date object.
 
@@ -202,14 +201,13 @@ def get_expression(date):
     Returns:
         str: a date expression for the date object.
     """
-    date_json = date.json()
     try:
-        expression = date_json["expression"]
+        expression = date["expression"]
     except KeyError:
-        if date_json.get("end"):
-            expression = "{0}-{1}".format(date_json["begin"], date_json["end"])
+        if date.get("end"):
+            expression = "{0}-{1}".format(date["begin"], date["end"])
         else:
-            expression = date_json["begin"]
+            expression = date["begin"]
     return expression
 
 
