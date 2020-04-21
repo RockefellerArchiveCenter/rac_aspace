@@ -29,6 +29,11 @@ class TestDataHelpers(unittest.TestCase):
             obj = wrap_json_object(data, client=client)
             return obj
 
+    def load_fixture(self, filename, client=None):
+        with open(os.path.join("fixtures", filename)) as json_file:
+            data = json.load(json_file)
+            return data
+
     def test_get_note_text(self):
         """Checks whether the returned note text matches the selected query string."""
         for fixture, expected in [
@@ -43,7 +48,7 @@ class TestDataHelpers(unittest.TestCase):
                 ("note_multi_ordered.json", [
                     "Bioghist with ordered list", "item1", "item2"]),
                 ("note_single.json", ["New York Mets"])]:
-            note = self.obj_from_fixture(fixture)
+            note = self.load_fixture(fixture)
             result = data_helpers.get_note_text(note)
             self.assertTrue(result, list)
             self.assertEqual(
@@ -53,7 +58,7 @@ class TestDataHelpers(unittest.TestCase):
     def test_text_in_note(self):
         """Checks whether the query string and note content are close to a match."""
         query_string = "New York Mets"
-        note = self.obj_from_fixture("note_single.json")
+        note = self.load_fixture("note_single.json")
         result = data_helpers.text_in_note(note, query_string)
         self.assertTrue(result)
 
@@ -117,7 +122,7 @@ class TestDataHelpers(unittest.TestCase):
                 ("rights_statement_open.json", False),
                 ("rights_statement_conditional.json", True),
                 ("rights_statement_not_restricted.json", False)]:
-            statement = self.obj_from_fixture(fixture)
+            statement = self.load_fixture(fixture)
             status = data_helpers.indicates_restriction(statement)
             self.assertEqual(
                 status, outcome,
@@ -131,7 +136,7 @@ class TestDataHelpers(unittest.TestCase):
             ("archival_object_2.json", True),
             ("archival_object_3.json", False)
         ]:
-            archival_object = self.obj_from_fixture(fixture)
+            archival_object = self.load_fixture(fixture)
             result = data_helpers.is_restricted(archival_object)
             self.assertEqual(result, outcome)
 

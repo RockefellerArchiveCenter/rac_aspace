@@ -15,12 +15,12 @@ from string import Formatter
 from .decorators import check_type
 
 
-@check_type(JSONModelObject)
+# @check_type(dict)
 def get_note_text(note):
     """Parses note content from different note types.
 
     Args:
-        note (JSONModelObject): an ArchivesSpace note object.
+        note (array): an ArchivesSpace note.
 
     Returns:
         list: a list containing note content.
@@ -29,45 +29,46 @@ def get_note_text(note):
         """Parses note content from subnotes.
 
         Args:
-            subnote (JSONModelObject): an ArchivesSpace subnote object.
+            subnote (array): an ArchivesSpace subnote.
 
         Returns:
             list: a list containing subnote content.
         """
-        if subnote.jsonmodel_type in [
+        if subnote['jsonmodel_type'] in [
                 'note_orderedlist', 'note_index']:
-            content = subnote.items
-        elif subnote.jsonmodel_type in ['note_chronology', 'note_definedlist']:
+            content = subnote['items']
+        elif subnote['jsonmodel_type'] in ['note_chronology', 'note_definedlist']:
             content = []
-            for k in subnote.items:
+            for k in subnote['items']:
                 for i in k:
                     content += k.get(i) if isinstance(k.get(i),
                                                       list) else [k.get(i)]
         else:
-            content = subnote.content if isinstance(
-                subnote.content, list) else [subnote.content]
+            content = subnote['content'] if isinstance(
+                subnote['content'], list) else [subnote['content']]
         return content
 
-    if note.jsonmodel_type == "note_singlepart":
-        content = note.content
-    elif note.jsonmodel_type == 'note_bibliography':
+    if note['jsonmodel_type'] == "note_singlepart":
+        content = note['content']
+    elif note['jsonmodel_type'] == 'note_bibliography':
         data = []
-        data += note.content
-        data += note.items
+        data += note['content']
+        data += note['items']
         content = data
-    elif note.jsonmodel_type == "note_index":
+    elif note['jsonmodel_type'] == "note_index":
         data = []
-        for item in note.items:
-            data.append(item.value)
+        for item in note['items']:
+            data.append(item['value'])
         content = data
     else:
-        subnote_content_list = list(parse_subnote(sn) for sn in note.subnotes)
+        subnote_content_list = list(parse_subnote(sn)
+                                    for sn in note['subnotes'])
         content = [
             c for subnote_content in subnote_content_list for c in subnote_content]
     return content
 
 
-@check_type(JSONModelObject)
+# @check_type(JSONModelObject)
 def text_in_note(note, query_string):
     """Performs fuzzy searching against note text.
 
@@ -212,7 +213,7 @@ def get_expression(date):
     return expression
 
 
-@check_type(JSONModelObject)
+# @check_type(JSONModelObject)
 def indicates_restriction(rights_statement):
     """Parses a rights statement to determine if it indicates a restriction.
 
@@ -228,17 +229,16 @@ def indicates_restriction(rights_statement):
         return False if (
             datetime.strptime(date, "%Y-%m-%d") >= today) else True
 
-    rights_json = rights_statement.json()
-    if is_expired(rights_json.get("end_date")):
+    if is_expired(rights_statement.get("end_date")):
         return False
-    for act in rights_json.get("acts"):
+    for act in rights_statement.get("acts"):
         if (act.get("restriction") in [
                 "disallow", "conditional"] and not is_expired(act.get("end_date"))):
             return True
     return False
 
 
-@check_type(JSONModelObject)
+# @check_type(JSONModelObject)
 def is_restricted(archival_object):
     """Parses an archival object to determine if it is restricted.
 
@@ -254,11 +254,11 @@ def is_restricted(archival_object):
         bool: True if archival object is restricted, False if not.
     """
     query_string = "materials are restricted"
-    for note in archival_object.notes:
-        if note.type == 'accessrestrict':
+    for note in archival_object['notes']:
+        if note['type'] == 'accessrestrict':
             if text_in_note(note, query_string):
                 return True
-    for rights_statement in archival_object.rights_statements:
+    for rights_statement in archival_object['rights_statements']:
         if indicates_restriction(rights_statement):
             return True
     return False
