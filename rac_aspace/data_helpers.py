@@ -15,7 +15,7 @@ from string import Formatter
 from .decorators import check_type
 
 
-# @check_type(dict)
+@check_type(dict)
 def get_note_text(note):
     """Parses note content from different note types.
 
@@ -68,7 +68,7 @@ def get_note_text(note):
     return content
 
 
-# @check_type(JSONModelObject)
+@check_type(dict)
 def text_in_note(note, query_string):
     """Performs fuzzy searching against note text.
 
@@ -132,7 +132,7 @@ def format_from_obj(obj, format_string):
                     str(e)))
 
 
-# @check_type(JSONModelObject)
+@check_type(dict)
 def format_resource_id(resource, separator=":"):
     """Concatenates the four-part ID for a resource record.
 
@@ -189,7 +189,7 @@ def get_orphans(object_list, null_attribute):
             yield obj
 
 
-# @check_type(JSONModelObject)
+@check_type(dict)
 def get_expression(date):
     """Returns a date expression for a date object.
 
@@ -211,7 +211,7 @@ def get_expression(date):
     return expression
 
 
-# @check_type(JSONModelObject)
+@check_type(dict)
 def indicates_restriction(rights_statement):
     """Parses a rights statement to determine if it indicates a restriction.
 
@@ -236,8 +236,8 @@ def indicates_restriction(rights_statement):
     return False
 
 
-# @check_type(JSONModelObject)
-def is_restricted(archival_object):
+@check_type(dict)
+def is_restricted(archival_object, query_string):
     """Parses an archival object to determine if it is restricted.
 
     Iterates through notes, looking for a conditions governing access note
@@ -251,10 +251,9 @@ def is_restricted(archival_object):
     Returns:
         bool: True if archival object is restricted, False if not.
     """
-    query_string = "materials are restricted"
     for note in archival_object['notes']:
         if note['type'] == 'accessrestrict':
-            if text_in_note(note, query_string):
+            if text_in_note(note, query_string.lower()):
                 return True
     for rights_statement in archival_object['rights_statements']:
         if indicates_restriction(rights_statement):

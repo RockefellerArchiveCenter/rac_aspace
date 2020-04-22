@@ -136,8 +136,9 @@ class TestDataHelpers(unittest.TestCase):
             ("archival_object_2.json", True),
             ("archival_object_3.json", False)
         ]:
+            query_string = "materials are restricted"
             archival_object = self.load_fixture(fixture)
-            result = data_helpers.is_restricted(archival_object)
+            result = data_helpers.is_restricted(archival_object, query_string)
             self.assertEqual(result, outcome)
 
     def test_strip_html_tags(self):
