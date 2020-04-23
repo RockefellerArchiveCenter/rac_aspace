@@ -123,7 +123,8 @@ class TestDataHelpers(unittest.TestCase):
                 ("rights_statement_conditional.json", True),
                 ("rights_statement_not_restricted.json", False)]:
             statement = self.load_fixture(fixture)
-            status = data_helpers.indicates_restriction(statement)
+            status = data_helpers.indicates_restriction(
+                statement, restriction_acts)
             self.assertEqual(
                 status, outcome,
                 "Restriction status for {} expected {}, got {} instead".format(
@@ -136,9 +137,11 @@ class TestDataHelpers(unittest.TestCase):
             ("archival_object_2.json", True),
             ("archival_object_3.json", False)
         ]:
+            restriction_acts = ['disallow', 'conditional']
             query_string = "materials are restricted"
             archival_object = self.load_fixture(fixture)
-            result = data_helpers.is_restricted(archival_object, query_string)
+            result = data_helpers.is_restricted(
+                archival_object, query_string, restriction_acts)
             self.assertEqual(result, outcome)
 
     def test_strip_html_tags(self):

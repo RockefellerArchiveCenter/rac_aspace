@@ -212,7 +212,7 @@ def get_expression(date):
 
 
 @check_type(dict)
-def indicates_restriction(rights_statement):
+def indicates_restriction(rights_statement, restriction_acts):
     """Parses a rights statement to determine if it indicates a restriction.
 
     Args:
@@ -230,14 +230,14 @@ def indicates_restriction(rights_statement):
     if is_expired(rights_statement.get("end_date")):
         return False
     for act in rights_statement.get("acts"):
-        if (act.get("restriction") in [
-                "disallow", "conditional"] and not is_expired(act.get("end_date"))):
+        if (act.get("restriction")
+                in restriction_acts and not is_expired(act.get("end_date"))):
             return True
     return False
 
 
 @check_type(dict)
-def is_restricted(archival_object, query_string):
+def is_restricted(archival_object, query_string, restriction_acts):
     """Parses an archival object to determine if it is restricted.
 
     Iterates through notes, looking for a conditions governing access note
@@ -247,6 +247,7 @@ def is_restricted(archival_object, query_string):
 
     Args:
         archival_object (JSONModelObject): an ArchivesSpace archival_object.
+        restriction_acts (list): a list of strings to match restriction act against.
 
     Returns:
         bool: True if archival object is restricted, False if not.
@@ -256,7 +257,7 @@ def is_restricted(archival_object, query_string):
             if text_in_note(note, query_string.lower()):
                 return True
     for rights_statement in archival_object['rights_statements']:
-        if indicates_restriction(rights_statement):
+        if indicates_restriction(rights_statement, restriction_acts):
             return True
     return False
 
