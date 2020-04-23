@@ -47,7 +47,7 @@ class TestDataHelpers(unittest.TestCase):
                     "bioghist with defined list", "item", "1", "item", "2"]),
                 ("note_multi_ordered.json", [
                     "Bioghist with ordered list", "item1", "item2"]),
-                ("note_single.json", ["New York Mets"])]:
+                ("note_single.json", ["Go Mets!"])]:
             note = self.load_fixture(fixture)
             result = data_helpers.get_note_text(note)
             self.assertTrue(result, list)
@@ -57,10 +57,15 @@ class TestDataHelpers(unittest.TestCase):
 
     def test_text_in_note(self):
         """Checks whether the query string and note content are close to a match."""
-        query_string = "New York Mets"
-        note = self.load_fixture("note_single.json")
-        result = data_helpers.text_in_note(note, query_string)
-        self.assertTrue(result)
+        for fixture, query_string, outcome in [
+            ("note_single.json", "Go Mets!", True),
+            ("note_single.json", "hello", False),
+            ("note_multi.json", "materials are restricted", True),
+            ("note_multi.json", "Boo Yankees", False)
+        ]:
+            note = self.load_fixture(fixture)
+            result = data_helpers.text_in_note(note, query_string)
+            self.assertEqual(result, outcome)
 
     def test_object_locations(self):
         """Checks whether the function returns a list of JSONModelObjects."""
@@ -140,13 +145,18 @@ class TestDataHelpers(unittest.TestCase):
 
     def test_is_restricted(self):
         """Tests whether the function can find restrictions in an AS archival object."""
-        for fixture, outcome in [
-            ("archival_object.json", True),
-            ("archival_object_2.json", True),
-            ("archival_object_3.json", False)
+        for fixture, query_string, restriction_acts, outcome in [
+            ("archival_object.json", "materials are restricted",
+             ['disallow', 'conditional'], True),
+            ("archival_object.json",
+             "materials are restricted", ['allow'], True),
+            ("archival_object.json", "test", ['allow'], False),
+            ("archival_object_2.json", "materials are restricted",
+             ['disallow', 'conditional'], True),
+            ("archival_object_2.json", "test", ['allow'], False),
+            ("archival_object_3.json",
+             "materials are restricted", ['allow'], False)
         ]:
-            restriction_acts = ['disallow', 'conditional']
-            query_string = "materials are restricted"
             archival_object = self.load_fixture(fixture)
             result = data_helpers.is_restricted(
                 archival_object, query_string, restriction_acts)
