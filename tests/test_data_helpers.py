@@ -117,11 +117,19 @@ class TestDataHelpers(unittest.TestCase):
 
     def test_indicates_restriction(self):
         """Tests whether rights statements are correctly parsed for restrictions."""
-        for fixture, outcome in [
-                ("rights_statement_restricted.json", True),
-                ("rights_statement_open.json", False),
-                ("rights_statement_conditional.json", True),
-                ("rights_statement_not_restricted.json", False)]:
+        for fixture, restriction_acts, outcome in [
+                ("rights_statement_restricted.json",
+                 ['disallow', 'conditional'], True),
+                ("rights_statement_restricted.json", ['allow'], False),
+                ("rights_statement_open.json",
+                 ['disallow', 'conditional'], False),
+                ("rights_statement_open.json", ['allow'], False),
+                ("rights_statement_conditional.json",
+                 ['disallow', 'conditional'], True),
+                ("rights_statement_conditional.json", ['allow'], False),
+                ("rights_statement_not_restricted.json",
+                 ['disallow', 'conditional'], False),
+                ("rights_statement_not_restricted.json", ['allow'], True)]:
             statement = self.load_fixture(fixture)
             status = data_helpers.indicates_restriction(
                 statement, restriction_acts)
