@@ -11,12 +11,12 @@ from asnake.jsonmodel import JSONModelObject, wrap_json_object
 from rac_aspace import data_helpers
 
 rac_vcr = vcr.VCR(
-    serializer='json',
+    serializer="json",
     cassette_library_dir=os.path.join("fixtures", "cassettes"),
-    record_mode='once',
-    match_on=['path', 'method'],
-    filter_query_parameters=['username', 'password'],
-    filter_headers=['Authorization', 'X-ArchivesSpace-Session'],
+    record_mode="once",
+    match_on=["path", "method"],
+    filter_query_parameters=["username", "password"],
+    filter_headers=["Authorization", "X-ArchivesSpace-Session"],
 )
 
 
@@ -82,7 +82,7 @@ class TestDataHelpers(unittest.TestCase):
     def test_format_resource_id(self):
         """Checks whether the function returns a concatenated string as expected."""
         for fixture, formatted, separator in [
-                ("archival_object.json", "1;2;3;4", ';'),
+                ("archival_object.json", "1;2;3;4", ";"),
                 ("archival_object_2.json", "1:2:3", None)]:
             resource = self.load_fixture(fixture)
             if not separator:
@@ -112,9 +112,9 @@ class TestDataHelpers(unittest.TestCase):
 
     def test_get_expression(self):
         """Tests whether the date expression function works as intended."""
-        files = ['date_expression.json',
-                 'date_no_expression.json',
-                 'date_no_expression_no_end.json']
+        files = ["date_expression.json",
+                 "date_no_expression.json",
+                 "date_no_expression_no_end.json"]
         for f in files:
             date = self.load_fixture(f)
             result = data_helpers.get_expression(date)
@@ -124,17 +124,17 @@ class TestDataHelpers(unittest.TestCase):
         """Tests whether rights statements are correctly parsed for restrictions."""
         for fixture, restriction_acts, outcome in [
                 ("rights_statement_restricted.json",
-                 ['disallow', 'conditional'], True),
-                ("rights_statement_restricted.json", ['allow'], False),
+                 ["disallow", "conditional"], True),
+                ("rights_statement_restricted.json", ["allow"], False),
                 ("rights_statement_open.json",
-                 ['disallow', 'conditional'], False),
-                ("rights_statement_open.json", ['allow'], False),
+                 ["disallow", "conditional"], False),
+                ("rights_statement_open.json", ["allow"], False),
                 ("rights_statement_conditional.json",
-                 ['disallow', 'conditional'], True),
-                ("rights_statement_conditional.json", ['allow'], False),
+                 ["disallow", "conditional"], True),
+                ("rights_statement_conditional.json", ["allow"], False),
                 ("rights_statement_not_restricted.json",
-                 ['disallow', 'conditional'], False),
-                ("rights_statement_not_restricted.json", ['allow'], True)]:
+                 ["disallow", "conditional"], False),
+                ("rights_statement_not_restricted.json", ["allow"], True)]:
             statement = self.load_fixture(fixture)
             status = data_helpers.indicates_restriction(
                 statement, restriction_acts)
@@ -147,15 +147,15 @@ class TestDataHelpers(unittest.TestCase):
         """Tests whether the function can find restrictions in an AS archival object."""
         for fixture, query_string, restriction_acts, outcome in [
             ("archival_object.json", "materials are restricted",
-             ['disallow', 'conditional'], True),
+             ["disallow", "conditional"], True),
             ("archival_object.json",
-             "materials are restricted", ['allow'], True),
-            ("archival_object.json", "test", ['allow'], False),
+             "materials are restricted", ["allow"], True),
+            ("archival_object.json", "test", ["allow"], False),
             ("archival_object_2.json", "materials are restricted",
-             ['disallow', 'conditional'], True),
-            ("archival_object_2.json", "test", ['allow'], False),
+             ["disallow", "conditional"], True),
+            ("archival_object_2.json", "test", ["allow"], False),
             ("archival_object_3.json",
-             "materials are restricted", ['allow'], False)
+             "materials are restricted", ["allow"], False)
         ]:
             archival_object = self.load_fixture(fixture)
             result = data_helpers.is_restricted(
@@ -196,5 +196,5 @@ class TestDataHelpers(unittest.TestCase):
                         excpt.exception))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

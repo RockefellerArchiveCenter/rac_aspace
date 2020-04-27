@@ -34,35 +34,35 @@ def get_note_text(note):
         Returns:
             list: a list containing subnote content.
         """
-        if subnote['jsonmodel_type'] in [
-                'note_orderedlist', 'note_index']:
-            content = subnote['items']
-        elif subnote['jsonmodel_type'] in ['note_chronology', 'note_definedlist']:
+        if subnote["jsonmodel_type"] in [
+                "note_orderedlist", "note_index"]:
+            content = subnote["items"]
+        elif subnote["jsonmodel_type"] in ["note_chronology", "note_definedlist"]:
             content = []
-            for k in subnote['items']:
+            for k in subnote["items"]:
                 for i in k:
                     content += k.get(i) if isinstance(k.get(i),
                                                       list) else [k.get(i)]
         else:
-            content = subnote['content'] if isinstance(
-                subnote['content'], list) else [subnote['content']]
+            content = subnote["content"] if isinstance(
+                subnote["content"], list) else [subnote["content"]]
         return content
 
-    if note['jsonmodel_type'] == "note_singlepart":
-        content = note['content']
-    elif note['jsonmodel_type'] == 'note_bibliography':
+    if note["jsonmodel_type"] == "note_singlepart":
+        content = note["content"]
+    elif note["jsonmodel_type"] == "note_bibliography":
         data = []
-        data += note['content']
-        data += note['items']
+        data += note["content"]
+        data += note["items"]
         content = data
-    elif note['jsonmodel_type'] == "note_index":
+    elif note["jsonmodel_type"] == "note_index":
         data = []
-        for item in note['items']:
-            data.append(item['value'])
+        for item in note["items"]:
+            data.append(item["value"])
         content = data
     else:
         subnote_content_list = list(parse_subnote(sn)
-                                    for sn in note['subnotes'])
+                                    for sn in note["subnotes"])
         content = [
             c for subnote_content in subnote_content_list for c in subnote_content]
     return content
@@ -157,7 +157,7 @@ def format_resource_id(resource, separator=":"):
 def closest_value(archival_object, key):
     """Finds the closest value matching a key.
 
-    Starts with an archival object, and iterates up through it's ancestors
+    Starts with an archival object, and iterates up through it"s ancestors
     until it finds a match for a key that is not empty or null.
 
     Args:
@@ -167,7 +167,7 @@ def closest_value(archival_object, key):
     Returns:
         The value of the key, which could be a str, list, or dict
     """
-    if getattr(archival_object, key) not in ['', [], {}, None]:
+    if getattr(archival_object, key) not in ["", [], {}, None]:
         return getattr(archival_object, key)
     else:
         for ancestor in archival_object.ancestors:
@@ -185,7 +185,7 @@ def get_orphans(object_list, null_attribute):
         dict: a list of ArchivesSpace objects.
     """
     for obj in object_list:
-        if getattr(obj, null_attribute) in ['', [], {}, None]:
+        if getattr(obj, null_attribute) in ["", [], {}, None]:
             yield obj
 
 
@@ -252,11 +252,11 @@ def is_restricted(archival_object, query_string, restriction_acts):
     Returns:
         bool: True if archival object is restricted, False if not.
     """
-    for note in archival_object['notes']:
-        if note['type'] == 'accessrestrict':
+    for note in archival_object["notes"]:
+        if note["type"] == "accessrestrict":
             if text_in_note(note, query_string.lower()):
                 return True
-    for rights_statement in archival_object['rights_statements']:
+    for rights_statement in archival_object["rights_statements"]:
         if indicates_restriction(rights_statement, restriction_acts):
             return True
     return False
@@ -269,6 +269,6 @@ def strip_html_tags(string):
     Args:
         string (str): An input string from which to remove HTML tags.
     """
-    tag_match = re.compile('<.*?>')
-    cleantext = re.sub(tag_match, '', string)
+    tag_match = re.compile("<.*?>")
+    cleantext = re.sub(tag_match, "", string)
     return cleantext
