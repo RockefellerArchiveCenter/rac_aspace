@@ -69,8 +69,8 @@ def get_note_text(note):
 def text_in_note(note, query_string):
     """Performs fuzzy searching against note text.
 
-    :param: JSONModelObject note: an ArchivesSpace note object.
-    :param: str query_string: a string to match against.
+    :param JSONModelObject note: an ArchivesSpace note object.
+    :param str query_string: a string to match against.
 
     :returns: True if a match is found for `query_string`, False if no match is
             found.
