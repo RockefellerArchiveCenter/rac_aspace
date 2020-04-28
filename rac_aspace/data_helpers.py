@@ -19,20 +19,16 @@ from .decorators import check_type
 def get_note_text(note):
     """Parses note content from different note types.
 
-    Args:
-        note (JSONModelObject): an ArchivesSpace note object.
+    :param note (JSONModelObject): an ArchivesSpace note object.
 
-    Returns:
-        list: a list containing note content.
+    :returns: list: a list containing note content.
     """
     def parse_subnote(subnote):
         """Parses note content from subnotes.
 
-        Args:
-            subnote (JSONModelObject): an ArchivesSpace subnote object.
+        "param subnote (JSONModelObject): an ArchivesSpace subnote object.
 
-        Returns:
-            list: a list containing subnote content.
+        :returns: list: a list containing subnote content.
         """
         if subnote.jsonmodel_type in [
                 'note_orderedlist', 'note_index']:
@@ -71,12 +67,10 @@ def get_note_text(note):
 def text_in_note(note, query_string):
     """Performs fuzzy searching against note text.
 
-    Args:
-        note (JSONModelObject): an ArchivesSpace note object.
-        query_string (str): a string to match against.
+    :param arg1: note (JSONModelObject): an ArchivesSpace note object.
+    :param arg2: query_string (str): a string to match against.
 
-    Returns:
-        bool: True if a match is found for `query_string`, False if no match is
+    :returns: bool: True if a match is found for `query_string`, False if no match is
             found.
     """
     CONFIDENCE_RATIO = 97
@@ -93,11 +87,9 @@ def text_in_note(note, query_string):
 def object_locations(archival_object):
     """Finds locations associated with an archival object.
 
-    Args:
-        archival_object (JSONModelObject): an ArchivesSpace archival_object.
+    :param archival_object (JSONModelObject): an ArchivesSpace archival_object.
 
-    Returns:
-        list: Locations objects associated with the archival object.
+    :returns: list: Locations objects associated with the archival object.
     """
     locations = []
     for instance in archival_object.instances:
@@ -110,11 +102,9 @@ def object_locations(archival_object):
 def format_from_obj(obj, format_string):
     """Generates a human-readable string from an object.
 
-    Args:
-        location (dict): an ArchivesSpace object.
+    :param location (dict): an ArchivesSpace object.
 
-    Returns:
-        str: a string in the chosen format
+    :returns: str: a string in the chosen format
     """
     if not format_string:
         raise Exception("No format string provided.")
@@ -135,13 +125,11 @@ def format_from_obj(obj, format_string):
 def format_resource_id(resource, separator=":"):
     """Concatenates the four-part ID for a resource record.
 
-    Args:
-        resource (JSONModelObject): an ArchivesSpace resource object.
-        separator (str): a separator to insert between the id parts. Defaults
+    :param arg1: resource (JSONModelObject): an ArchivesSpace resource object.
+    :param arg2: separator (str): a separator to insert between the id parts. Defaults
             to `:`.
 
-    Returns:
-        str: a concatenated four-part ID for the resource record.
+    :returns: str: a concatenated four-part ID for the resource record.
     """
     resource_json = resource.json()
     resource_id = []
@@ -160,12 +148,10 @@ def closest_value(archival_object, key):
     Starts with an archival object, and iterates up through it's ancestors
     until it finds a match for a key that is not empty or null.
 
-    Args:
-        archival_object (JSONModelObject): an ArchivesSpace archival_object
-        key (str): the key to match against.
+    :param arg1: archival_object (JSONModelObject): an ArchivesSpace archival_object
+    :param arg2: key (str): the key to match against.
 
-    Returns:
-        The value of the key, which could be a str, list, or dict
+    :returns: The value of the key, which could be a str, list, or dict
     """
     if getattr(archival_object, key) not in ['', [], {}, None]:
         return getattr(archival_object, key)
@@ -177,12 +163,10 @@ def closest_value(archival_object, key):
 def get_orphans(object_list, null_attribute):
     """Finds objects in a list which do not have a value in a specified field.
 
-    Args:
-        object_list (list): a list of ArchivesSpace objects.
-        null_attribute: an attribute which must be empty or null.
+    :param arg1: object_list (list): a list of ArchivesSpace objects.
+    :param arg2: null_attribute: an attribute which must be empty or null.
 
-    Yields:
-        dict: a list of ArchivesSpace objects.
+    :yields: dict: a list of ArchivesSpace objects.
     """
     for obj in object_list:
         if getattr(obj, null_attribute) in ['', [], {}, None]:
@@ -195,11 +179,9 @@ def get_expression(date):
 
     Concatenates start and end dates if no date expression exists.
 
-    Args:
-        date (JSONModelObject): an ArchivesSpace date object
+    :param date (JSONModelObject): an ArchivesSpace date object
 
-    Returns:
-        str: a date expression for the date object.
+    :returns: str: a date expression for the date object.
     """
     date_json = date.json()
     try:
@@ -216,11 +198,9 @@ def get_expression(date):
 def indicates_restriction(rights_statement):
     """Parses a rights statement to determine if it indicates a restriction.
 
-    Args:
-        rights_statement (JSONModelObject): an ArchivesSpace rights statement.
+    :param rights_statement (JSONModelObject): an ArchivesSpace rights statement.
 
-    Returns:
-        bool: True if rights statement indicates a restriction, False if not.
+    :returns: bool: True if rights statement indicates a restriction, False if not.
     """
     def is_expired(date):
         today = datetime.now()
@@ -247,11 +227,9 @@ def is_restricted(archival_object):
     Also looks for associated rights statements which indicate object may be
     restricted.
 
-    Args:
-        archival_object (JSONModelObject): an ArchivesSpace archival_object.
+    :param archival_object (JSONModelObject): an ArchivesSpace archival_object.
 
-    Returns:
-        bool: True if archival object is restricted, False if not.
+    :returns: bool: True if archival object is restricted, False if not.
     """
     query_string = "materials are restricted"
     for note in archival_object.notes:
@@ -268,8 +246,7 @@ def is_restricted(archival_object):
 def strip_html_tags(string):
     """Strips HTML tags from a string.
 
-    Args:
-        string (str): An input string from which to remove HTML tags.
+    :param string (str): An input string from which to remove HTML tags.
     """
     tag_match = re.compile('<.*?>')
     cleantext = re.sub(tag_match, '', string)
