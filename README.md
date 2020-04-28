@@ -90,7 +90,7 @@ $ flake8
 ```
 ## Building Documentation
 
-rac_aspace uses [Sphinx](https://www.sphinx-doc.org/en/master/index.html) to generate documentation from the docstrings in its code. Sphinx uses the [Napolean extension](https://sphinxcontrib-napoleon.readthedocs.io/en/latest/) to understand the Google style docstrings. Code objects for which we want to create documentation are added to the Sphinx index.rst file as [autodoc](https://autodocs.io/) directives.
+rac_aspace uses [Sphinx](https://www.sphinx-doc.org/en/master/index.html) to generate documentation from the docstrings in its code. Code objects for which we want to create documentation are added to the Sphinx index.rst file as [autodoc](https://autodocs.io/) directives.
 
 Sphinx documentation files are housed within the docs directory in rac_aspace.
 
