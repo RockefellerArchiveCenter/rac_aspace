@@ -10,9 +10,8 @@ class BaseSerializer:
         replaces the filename extension if it does not match the extension
         specified by the class.
 
-        Args:
-            filename (str): a filename at which the data should be serialized.
-            filemode (str): Optional argument used when opening files.
+        :param str filename: a filename at which the data should be serialized.
+        :param str filemode: Optional argument used when opening files.
         """
         self.filemode = filemode
         extension = filename.split(".")[-1]
@@ -26,8 +25,7 @@ class BaseSerializer:
     def write_data(self, data):
         """Writes data to a file.
 
-        Args:
-            data (dict or list): a sequence of dicts.
+        :param: data (dict or list) a sequence of dicts.
         """
         if self.filemode.startswith("r"):
             raise TypeError("Filemode must allow write operations.")
