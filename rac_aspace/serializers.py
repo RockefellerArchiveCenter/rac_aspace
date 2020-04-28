@@ -25,7 +25,7 @@ class BaseSerializer:
     def write_data(self, data):
         """Writes data to a file.
 
-        :param data (dict or list): a sequence of dicts.
+        :param (dict or list) data: a sequence of dicts.
         """
         if self.filemode.startswith("r"):
             raise TypeError("Filemode must allow write operations.")
