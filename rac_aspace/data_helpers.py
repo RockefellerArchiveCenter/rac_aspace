@@ -19,7 +19,8 @@ from .decorators import check_type
 def get_note_text(note):
     """Parses note content from different note types.
 
-    :param dict note: an ArchivesSpace note.
+    Args:
+        note (array): an ArchivesSpace note.
 
     :returns: a list containing note content.
     :rtype: list
@@ -27,7 +28,8 @@ def get_note_text(note):
     def parse_subnote(subnote):
         """Parses note content from subnotes.
 
-        :param dict subnote: an ArchivesSpace subnote.
+        Args:
+            subnote (array): an ArchivesSpace subnote.
 
         :returns: a list containing subnote content.
         :rtype: list
@@ -70,7 +72,7 @@ def get_note_text(note):
 def text_in_note(note, query_string):
     """Performs fuzzy searching against note text.
 
-    :param dict note: an ArchivesSpace note object.
+    :param JSONModelObject note: an ArchivesSpace note object.
     :param str query_string: a string to match against.
 
     :returns: True if a match is found for `query_string`, False if no match is
@@ -131,7 +133,7 @@ def format_from_obj(obj, format_string):
 def format_resource_id(resource, separator=":"):
     """Concatenates the four-part ID for a resource record.
 
-    :param dict resource: an ArchivesSpace resource object.
+    :param JSONModelObject resource: an ArchivesSpace resource object.
     :param str separator: a separator to insert between the id parts. Defaults
             to `:`.
 
@@ -187,7 +189,7 @@ def get_expression(date):
 
     Concatenates start and end dates if no date expression exists.
 
-    :param dict date: an ArchivesSpace date object
+    :param JSONModelObject date: an ArchivesSpace date object
 
     :returns: date expression for the date object.
     :rtype: str
@@ -206,7 +208,7 @@ def get_expression(date):
 def indicates_restriction(rights_statement, restriction_acts):
     """Parses a rights statement to determine if it indicates a restriction.
 
-    :param dict rights_statement: an ArchivesSpace rights statement.
+    :param JSONModelObject rights_statement: an ArchivesSpace rights statement.
 
     :returns: True if rights statement indicates a restriction, False if not.
     :rtype: bool
@@ -235,8 +237,9 @@ def is_restricted(archival_object, query_string, restriction_acts):
     Also looks for associated rights statements which indicate object may be
     restricted.
 
-    :param dict archival_object: an ArchivesSpace archival_object.
-    :param list restriction_acts: a list of strings to match restriction act against.
+    Args:
+        archival_object (JSONModelObject): an ArchivesSpace archival_object.
+        restriction_acts (list): a list of strings to match restriction act against.
 
     :returns: True if archival object is restricted, False if not.
     :rtype: bool
