@@ -174,7 +174,7 @@ def get_orphans(object_list, null_attribute):
     :param null_attribute: an attribute which must be empty or null.
 
     :yields: a list of ArchivesSpace objects.
-    :rtype: dict
+    :yield type: dict
     """
     for obj in object_list:
         if getattr(obj, null_attribute) in ['', [], {}, None]:
