@@ -151,7 +151,7 @@ def format_resource_id(resource, separator=":"):
 def closest_value(archival_object, key):
     """Finds the closest value matching a key.
 
-    Starts with an archival object, and iterates up through it"s ancestors
+    Starts with an archival object, and iterates up through its ancestors
     until it finds a match for a key that is not empty or null.
 
     :param JSONModelObject archival_object: an ArchivesSpace archival_object.
