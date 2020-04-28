@@ -15,11 +15,12 @@ from string import Formatter
 from .decorators import check_type
 
 
-@check_type(JSONModelObject)
+@check_type(dict)
 def get_note_text(note):
     """Parses note content from different note types.
 
-    :param JSONModelObject note: an ArchivesSpace note object.
+    Args:
+        note (array): an ArchivesSpace note.
 
     :returns: a list containing note content.
     :rtype: list
@@ -27,45 +28,47 @@ def get_note_text(note):
     def parse_subnote(subnote):
         """Parses note content from subnotes.
 
-        "param JSONModelObject subnote: an ArchivesSpace subnote object.
+        Args:
+            subnote (array): an ArchivesSpace subnote.
 
         :returns: a list containing subnote content.
         :rtype: list
         """
-        if subnote.jsonmodel_type in [
-                'note_orderedlist', 'note_index']:
-            content = subnote.items
-        elif subnote.jsonmodel_type in ['note_chronology', 'note_definedlist']:
+        if subnote["jsonmodel_type"] in [
+                "note_orderedlist", "note_index"]:
+            content = subnote["items"]
+        elif subnote["jsonmodel_type"] in ["note_chronology", "note_definedlist"]:
             content = []
-            for k in subnote.items:
+            for k in subnote["items"]:
                 for i in k:
                     content += k.get(i) if isinstance(k.get(i),
                                                       list) else [k.get(i)]
         else:
-            content = subnote.content if isinstance(
-                subnote.content, list) else [subnote.content]
+            content = subnote["content"] if isinstance(
+                subnote["content"], list) else [subnote["content"]]
         return content
 
-    if note.jsonmodel_type == "note_singlepart":
-        content = note.content
-    elif note.jsonmodel_type == 'note_bibliography':
+    if note["jsonmodel_type"] == "note_singlepart":
+        content = note["content"]
+    elif note["jsonmodel_type"] == "note_bibliography":
         data = []
-        data += note.content
-        data += note.items
+        data += note["content"]
+        data += note["items"]
         content = data
-    elif note.jsonmodel_type == "note_index":
+    elif note["jsonmodel_type"] == "note_index":
         data = []
-        for item in note.items:
-            data.append(item.value)
+        for item in note["items"]:
+            data.append(item["value"])
         content = data
     else:
-        subnote_content_list = list(parse_subnote(sn) for sn in note.subnotes)
+        subnote_content_list = list(parse_subnote(sn)
+                                    for sn in note["subnotes"])
         content = [
             c for subnote_content in subnote_content_list for c in subnote_content]
     return content
 
 
-@check_type(JSONModelObject)
+@check_type(dict)
 def text_in_note(note, query_string):
     """Performs fuzzy searching against note text.
 
@@ -126,7 +129,7 @@ def format_from_obj(obj, format_string):
                     str(e)))
 
 
-@check_type(JSONModelObject)
+@check_type(dict)
 def format_resource_id(resource, separator=":"):
     """Concatenates the four-part ID for a resource record.
 
@@ -137,11 +140,10 @@ def format_resource_id(resource, separator=":"):
     :returns: a concatenated four-part ID for the resource record.
     :rtype: str
     """
-    resource_json = resource.json()
     resource_id = []
     for x in range(4):
         try:
-            resource_id.append(resource_json["id_{0}".format(x)])
+            resource_id.append(resource["id_{0}".format(x)])
         except KeyError:
             break
     return separator.join(resource_id)
@@ -151,7 +153,7 @@ def format_resource_id(resource, separator=":"):
 def closest_value(archival_object, key):
     """Finds the closest value matching a key.
 
-    Starts with an archival object, and iterates up through it's ancestors
+    Starts with an archival object, and iterates up through it"s ancestors
     until it finds a match for a key that is not empty or null.
 
     :param JSONModelObject archival_object: an ArchivesSpace archival_object.
@@ -160,7 +162,7 @@ def closest_value(archival_object, key):
     :returns: The value of the key, which could be a str, list, or dict.
     :rtype: str, list, or key
     """
-    if getattr(archival_object, key) not in ['', [], {}, None]:
+    if getattr(archival_object, key) not in ["", [], {}, None]:
         return getattr(archival_object, key)
     else:
         for ancestor in archival_object.ancestors:
@@ -177,11 +179,11 @@ def get_orphans(object_list, null_attribute):
     :yield type: dict
     """
     for obj in object_list:
-        if getattr(obj, null_attribute) in ['', [], {}, None]:
+        if getattr(obj, null_attribute) in ["", [], {}, None]:
             yield obj
 
 
-@check_type(JSONModelObject)
+@check_type(dict)
 def get_expression(date):
     """Returns a date expression for a date object.
 
@@ -192,19 +194,18 @@ def get_expression(date):
     :returns: date expression for the date object.
     :rtype: str
     """
-    date_json = date.json()
     try:
-        expression = date_json["expression"]
+        expression = date["expression"]
     except KeyError:
-        if date_json.get("end"):
-            expression = "{0}-{1}".format(date_json["begin"], date_json["end"])
+        if date.get("end"):
+            expression = "{0}-{1}".format(date["begin"], date["end"])
         else:
-            expression = date_json["begin"]
+            expression = date["begin"]
     return expression
 
 
-@check_type(JSONModelObject)
-def indicates_restriction(rights_statement):
+@check_type(dict)
+def indicates_restriction(rights_statement, restriction_acts):
     """Parses a rights statement to determine if it indicates a restriction.
 
     :param JSONModelObject rights_statement: an ArchivesSpace rights statement.
@@ -218,18 +219,17 @@ def indicates_restriction(rights_statement):
         return False if (
             datetime.strptime(date, "%Y-%m-%d") >= today) else True
 
-    rights_json = rights_statement.json()
-    if is_expired(rights_json.get("end_date")):
+    if is_expired(rights_statement.get("end_date")):
         return False
-    for act in rights_json.get("acts"):
-        if (act.get("restriction") in [
-                "disallow", "conditional"] and not is_expired(act.get("end_date"))):
+    for act in rights_statement.get("acts"):
+        if (act.get("restriction")
+                in restriction_acts and not is_expired(act.get("end_date"))):
             return True
     return False
 
 
-@check_type(JSONModelObject)
-def is_restricted(archival_object):
+@check_type(dict)
+def is_restricted(archival_object, query_string, restriction_acts):
     """Parses an archival object to determine if it is restricted.
 
     Iterates through notes, looking for a conditions governing access note
@@ -237,18 +237,19 @@ def is_restricted(archival_object):
     Also looks for associated rights statements which indicate object may be
     restricted.
 
-    :param JSONModelObject archival_object: an ArchivesSpace archival_object.
+    Args:
+        archival_object (JSONModelObject): an ArchivesSpace archival_object.
+        restriction_acts (list): a list of strings to match restriction act against.
 
     :returns: True if archival object is restricted, False if not.
     :rtype: bool
     """
-    query_string = "materials are restricted"
-    for note in archival_object.notes:
-        if note.type == 'accessrestrict':
-            if text_in_note(note, query_string):
+    for note in archival_object["notes"]:
+        if note["type"] == "accessrestrict":
+            if text_in_note(note, query_string.lower()):
                 return True
-    for rights_statement in archival_object.rights_statements:
-        if indicates_restriction(rights_statement):
+    for rights_statement in archival_object["rights_statements"]:
+        if indicates_restriction(rights_statement, restriction_acts):
             return True
     return False
 
@@ -259,6 +260,6 @@ def strip_html_tags(string):
 
     :param str string: An input string from which to remove HTML tags.
     """
-    tag_match = re.compile('<.*?>')
-    cleantext = re.sub(tag_match, '', string)
+    tag_match = re.compile("<.*?>")
+    cleantext = re.sub(tag_match, "", string)
     return cleantext
