@@ -41,7 +41,7 @@ class BaseSerializer:
 
     def read_data(self):
         """Reads data from file and checks that filemodes are correctly handled."""
-        
+
         if not self.filemode.startswith("r"):
             raise TypeError("Read-only filemode required.")
         with open(self.filename, self.filemode) as f:
